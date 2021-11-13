@@ -3,14 +3,29 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour, PlayerControls.IGameplayActions
 {
-    // public members
+    // #defines
+    int SPRINT_SPEED = 15;
+    int RUN_SPEED = 5;
+    int ROT_MULTIPLIER = 100;
+
+    // camera
+    public Camera cam;
+    public float camOffset = 5f;
+    public float camHeight = 10f;
+    public float camAngle = 60f;
+
+    // player settings
     public float rotationSpeed = 5;
-    // use the method getMovementSpeed to get actual speed (need to factor in controller rates)
     public float baseSpeed = 10;
+    private float curSpeed = 0;
 
     // private members
     PlayerControls controls; // for getting control inputs
     Vector3 MovementDirection; // set by player controls, normalized by default
+
+    // animation related
+    Animator anim;
+    int move_state_hash;
 
     #region Input systems
     public void OnEnable()
@@ -38,32 +53,64 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
 
     void Start()
     {
+        anim = GetComponent<Animator>();
+        move_state_hash = Animator.StringToHash("move_state");
     }
 
     // Update is called once per frame
     void Update()
     {
-        // updates movement and rotation
-        updateTransform();
+        handleTransform();
+        handleCam();
+        handleAnim();
     }
 
     // private methods:
-    private void updateTransform()
+    private void handleTransform()
     {
+        Vector3 displacement = Vector3.zero;
         if (MovementDirection != Vector3.zero)
         {
-            Quaternion rot = Quaternion.LookRotation(MovementDirection, Vector3.up);
-            // when rotating, have player move slower
-            if (transform.rotation == rot)
+            Quaternion moveRot = Quaternion.LookRotation(MovementDirection, Vector3.up);
+            float rotAngle = Quaternion.Angle(transform.rotation, moveRot);
+            // when rotational angle is big, have player move slower
+            if (rotAngle < 10)
             {
-                transform.position += baseSpeed * MovementDirection * Time.deltaTime;
+                displacement = baseSpeed * MovementDirection;
             }
             else
             {
-                transform.position += .3f * baseSpeed * MovementDirection * Time.deltaTime;
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 100 * rotationSpeed * Time.deltaTime);
+                float slowDown = -rotAngle / 180 + 1;
+                displacement = slowDown * baseSpeed * MovementDirection;
             }
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, moveRot, ROT_MULTIPLIER * rotationSpeed * Time.deltaTime);
         }
+        transform.position += displacement * Time.deltaTime;
+        curSpeed = displacement.magnitude;
+    }
+
+    private void handleCam()
+    {
+        cam.transform.position = transform.position + new Vector3(0f, camHeight, -camOffset);
+        cam.transform.rotation = Quaternion.AngleAxis(camAngle, Vector3.right);
+    }
+
+    private void handleAnim()
+    {
+        int move_state = 0;
+        if (curSpeed >= SPRINT_SPEED)
+        {
+            move_state = 3;
+        }
+        else if (curSpeed >= RUN_SPEED)
+        {
+            move_state = 2;
+        }
+        else if (curSpeed > 0)
+        {
+            move_state = 1;
+        }
+        anim.SetInteger(move_state_hash, move_state);
     }
 
     /* * * * * * * * * * *
@@ -74,7 +121,6 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
     // Get actual movement speed of character, factoring in controller tilt
     public float getMovementSpeed()
     {
-        float controllerSpeed = MovementDirection.magnitude;
-        return controllerSpeed * baseSpeed;
+        return curSpeed;
     }
 }
