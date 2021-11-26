@@ -4,28 +4,39 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour, PlayerControls.IGameplayActions
 {
     // #defines
-    int SPRINT_SPEED = 15;
-    int RUN_SPEED = 5;
     int ROT_MULTIPLIER = 100;
 
     // camera
     public Camera cam;
-    public float camOffset = 5f;
-    public float camHeight = 10f;
-    public float camAngle = 60f;
+
+    float camOffset = 5f;
+    float camHeight = 10f;
+    float camAngle = 60f;
 
     // player settings
-    public float rotationSpeed = 5;
-    public float baseSpeed = 10;
-    private float curSpeed = 0;
+    public float rotationSpeed = 5.0f;
+    public float baseSpeed = 10.0f;
+
+    float sprintMult = 2.0f;
+    float rollMult = 4.0f;
+    float curSpeed = 0.0f;
 
     // private members
-    PlayerControls controls; // for getting control inputs
+    bool isSprinting;
+    float lastMoved;
     Vector3 MovementDirection; // set by player controls, normalized by default
 
+    // control related
+    bool sprintToggled;
+    bool sprintHeld;
+    bool rollTriggered;
+    PlayerControls controls; // for getting control inputs
+
     // animation related
-    Animator anim;
+    Animator animator;
+    CharacterController characterController;
     int move_state_hash;
+    int roll_trigger_hash;
 
     #region Input systems
     public void OnEnable()
@@ -49,12 +60,48 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
         var direction = context.ReadValue<Vector2>();
         MovementDirection = new Vector3(direction.x, 0.0f, direction.y);
     }
+
+    public void OnSprintToggle(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            sprintToggled = !sprintToggled;
+        }
+    }
+
+    public void OnSprintHold(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            sprintHeld = true;
+        }
+        else if( context.phase == InputActionPhase.Canceled)
+        {
+            sprintHeld = false;
+        }
+    }
+
+    public void OnRoll(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started && canMove())
+        {
+            rollTriggered = true;
+        }
+    }
     #endregion
 
     void Start()
     {
-        anim = GetComponent<Animator>();
+        // default values
+        sprintToggled = false;
+        sprintHeld = false;
+        MovementDirection = new Vector3();
+
+        // animation setup
+        animator = GetComponent<Animator>();
+        characterController = GetComponent<CharacterController>();
         move_state_hash = Animator.StringToHash("move_state");
+        roll_trigger_hash = Animator.StringToHash("roll_trigger");
     }
 
     // Update is called once per frame
@@ -69,7 +116,13 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
     private void handleTransform()
     {
         Vector3 displacement = Vector3.zero;
-        if (MovementDirection != Vector3.zero)
+        Quaternion rot = transform.rotation;
+        if (rollTriggered)
+        {
+            animator.SetTrigger(roll_trigger_hash);
+            rollTriggered = false;
+        }
+        if ((MovementDirection != Vector3.zero) && !isRolling())
         {
             Quaternion moveRot = Quaternion.LookRotation(MovementDirection, Vector3.up);
             float rotAngle = Quaternion.Angle(transform.rotation, moveRot);
@@ -83,10 +136,29 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
                 float slowDown = -rotAngle / 180 + 1;
                 displacement = slowDown * baseSpeed * MovementDirection;
             }
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, moveRot, ROT_MULTIPLIER * rotationSpeed * Time.deltaTime);
+            rot = Quaternion.RotateTowards(transform.rotation, moveRot, ROT_MULTIPLIER * rotationSpeed * Time.deltaTime);
+
+            // handle sprint
+            isSprinting = (sprintToggled || sprintHeld) && displacement.magnitude >= (baseSpeed * .5f);
+            if (isSprinting)
+            {
+                displacement *= sprintMult;
+            }
+            lastMoved = Time.time;
         }
-        transform.position += displacement * Time.deltaTime;
+        else // no input is detected
+        {
+            if ((Time.time - lastMoved) > .05f)
+                sprintToggled = false;
+            if (isRolling())
+            {
+                displacement = transform.forward * rollMult;
+            }
+        }
+        transform.rotation = rot;
+        characterController.SimpleMove(displacement);
         curSpeed = displacement.magnitude;
+        // Debug.Log(string.Format("Speed: {0}", curSpeed));
     }
 
     private void handleCam()
@@ -98,11 +170,11 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
     private void handleAnim()
     {
         int move_state = 0;
-        if (curSpeed >= SPRINT_SPEED)
+        if (isSprinting)
         {
             move_state = 3;
         }
-        else if (curSpeed >= RUN_SPEED)
+        else if (curSpeed >= baseSpeed * .5f)
         {
             move_state = 2;
         }
@@ -110,7 +182,17 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
         {
             move_state = 1;
         }
-        anim.SetInteger(move_state_hash, move_state);
+        animator.SetInteger(move_state_hash, move_state);
+    }
+
+    private bool isRolling()
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).IsName("Roll");
+    }
+
+    private bool canMove()
+    {
+        return !isRolling();
     }
 
     /* * * * * * * * * * *
