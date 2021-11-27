@@ -49,6 +49,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""79d141c6-6b06-4cb0-9d9a-c8d898af92c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -108,15 +116,59 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""dc5cd302-5257-41ec-b880-7c48d0ff68e9"",
-                    ""path"": ""<Gamepad>/leftStick"",
+                    ""name"": ""Left Stick [Gamepad]"",
+                    ""id"": ""94ba555b-3012-4cf1-b23f-f7cb890a5721"",
+                    ""path"": ""2DVector(mode=2)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""671a3843-b872-46db-ba9b-5d59f8d88848"",
+                    ""path"": ""<Gamepad>/leftStick/up"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""5b1f0fb4-54cf-4439-b9ea-72d3f1dc64c8"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""14de2e6f-1218-4651-b3df-83538d5c9656"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""72371974-3284-4f21-93f0-c85e1ee13353"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -133,6 +185,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""172b9752-af1f-4809-9111-e222762715b2"",
                     ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint Hold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d43df3cf-46d0-4530-aead-b51738affda5"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -161,6 +224,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""07931165-d92d-4157-ac4a-7c2e6e6dcccb"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""02edbdb9-112b-438c-a8a0-94e82928ac9e"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -173,6 +258,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_gameplay_SprintToggle = m_gameplay.FindAction("Sprint Toggle", throwIfNotFound: true);
         m_gameplay_SprintHold = m_gameplay.FindAction("Sprint Hold", throwIfNotFound: true);
         m_gameplay_Roll = m_gameplay.FindAction("Roll", throwIfNotFound: true);
+        m_gameplay_Attack = m_gameplay.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -226,6 +312,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_gameplay_SprintToggle;
     private readonly InputAction m_gameplay_SprintHold;
     private readonly InputAction m_gameplay_Roll;
+    private readonly InputAction m_gameplay_Attack;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -234,6 +321,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @SprintToggle => m_Wrapper.m_gameplay_SprintToggle;
         public InputAction @SprintHold => m_Wrapper.m_gameplay_SprintHold;
         public InputAction @Roll => m_Wrapper.m_gameplay_Roll;
+        public InputAction @Attack => m_Wrapper.m_gameplay_Attack;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -255,6 +343,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Roll.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRoll;
                 @Roll.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRoll;
                 @Roll.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRoll;
+                @Attack.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
+                @Attack.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
+                @Attack.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAttack;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -271,6 +362,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Roll.started += instance.OnRoll;
                 @Roll.performed += instance.OnRoll;
                 @Roll.canceled += instance.OnRoll;
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
             }
         }
     }
@@ -281,5 +375,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnSprintToggle(InputAction.CallbackContext context);
         void OnSprintHold(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
 }
