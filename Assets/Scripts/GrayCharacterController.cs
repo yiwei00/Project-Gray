@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,7 +7,7 @@ public class GrayCharacterController : MonoBehaviour
     float ROT_MULTIPLIER = 180 / Mathf.PI;
 
     // player settings
-    public float rotationSpeed = 360f;
+    public float rotationSpeed = 9.4f;
     public float baseSpeed = 5.0f;
 
     float sprintMult = 2.0f;
@@ -26,6 +25,7 @@ public class GrayCharacterController : MonoBehaviour
     bool attackStarted;
 
     // animation related
+    bool hasAnimator;
     Animator animator;
     CharacterController characterController;
     int move_state_hash;
@@ -68,22 +68,26 @@ public class GrayCharacterController : MonoBehaviour
         // default values
         sprintToggled = false;
         displacement = new Vector3();
-
+        // get character controller
+        characterController = GetComponent<CharacterController>();
         // animation setup
         animator = GetComponent<Animator>();
-        characterController = GetComponent<CharacterController>();
-        move_state_hash = Animator.StringToHash("move_state");
-        roll_trigger_hash = Animator.StringToHash("roll_trigger");
-        attack1_trigger_hash = Animator.StringToHash("attack1_trigger");
+        hasAnimator = animator != null;
+        if (hasAnimator)
+        {
+            move_state_hash = Animator.StringToHash("move_state");
+            roll_trigger_hash = Animator.StringToHash("roll_trigger");
+            attack1_trigger_hash = Animator.StringToHash("attack1_trigger");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(sprintToggled);
         handleTransform();
         handleAttack();
-        handleAnim();
+        if (hasAnimator)
+            handleAnim();
     }
 
     // private methods:
@@ -100,7 +104,7 @@ public class GrayCharacterController : MonoBehaviour
         // allow movement
         if (canMove())
         {
-            if (rollTriggered)
+            if (rollTriggered && hasAnimator)
             {
                 animator.SetTrigger(roll_trigger_hash);
                 rollStarted = true;
@@ -123,8 +127,8 @@ public class GrayCharacterController : MonoBehaviour
             }
             else // when rotational angle is big, have player move slower as they'll be rotating
             {
-                Func<float, float> angMap = (x) => (1 + (-x / 180));
-                Func<float, float> expCurve = (x) => (Mathf.Pow(10, x) - 1) / (10 - 1);
+                System.Func<float, float> angMap = (x) => (1 + (-x / 180));
+                System.Func<float, float> expCurve = (x) => (Mathf.Pow(10, x) - 1) / (10 - 1);
                 float slowDown = expCurve(angMap(rotAngle));
                 displacement = slowDown * baseSpeed * this.displacement;
             }
@@ -155,7 +159,8 @@ public class GrayCharacterController : MonoBehaviour
         {
             if (canAttack())
             {
-                animator.SetTrigger(attack1_trigger_hash);
+                if (hasAnimator)
+                    animator.SetTrigger(attack1_trigger_hash);
                 attackStarted = true;
             }
             attackTriggered = false;
@@ -182,8 +187,9 @@ public class GrayCharacterController : MonoBehaviour
         animator.SetInteger(move_state_hash, move_state);
     }
 
-    private bool isRolling()
+    public bool isRolling()
     {
+        if (!hasAnimator) return false;
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Roll"))
         {
             rollStarted = false;
@@ -196,6 +202,7 @@ public class GrayCharacterController : MonoBehaviour
 
     private bool inAttackAnim()
     {
+        if (!hasAnimator) return false;
         return (
                animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1")
             || animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2")
@@ -212,11 +219,6 @@ public class GrayCharacterController : MonoBehaviour
         if (attackStarted)
             return true;
         return false;
-    }
-
-    private bool isInvincible()
-    {
-        return isRolling();
     }
 
     private bool canMove()
