@@ -16,7 +16,6 @@ public class GrayCharacterController : MonoBehaviour
 
     // private members
     bool isSprinting;
-    float lastMovementInputTime;
     Vector3 displacement; // set by player controls, normalized by default
 
     // state machine
@@ -81,6 +80,7 @@ public class GrayCharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(sprintToggled);
         handleTransform();
         handleAttack();
         handleAnim();
@@ -97,11 +97,6 @@ public class GrayCharacterController : MonoBehaviour
         {
             moveRot = Quaternion.LookRotation(this.displacement, Vector3.up);
         }
-        else // no input, auto un-sprint
-        {
-            if ((Time.time - lastMovementInputTime) > .05f)
-                sprintToggled = false;
-        }
         // allow movement
         if (canMove())
         {
@@ -112,7 +107,6 @@ public class GrayCharacterController : MonoBehaviour
                 rollTriggered = false;
             }
             // rotation
-            Debug.Log(rotationSpeed);
             if (rotationSpeed < 0)
             {
                 rot = Quaternion.RotateTowards(transform.rotation, moveRot, 360f);

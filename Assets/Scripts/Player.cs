@@ -18,6 +18,7 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
     float INPUT_DELAY = .3f;
     Vector3 displacement;
     bool isSprintHeld;
+    bool isSprintToggled;
     float lastMove;
     float lastAttack;
     float lastRoll;
@@ -41,6 +42,7 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
 
     public void OnMovement(InputAction.CallbackContext context)
     {
+        lastMove = Time.time;
         var direction = context.ReadValue<Vector2>();
         displacement = new Vector3(direction.x, 0.0f, direction.y);
         pc.Move(displacement);
@@ -50,7 +52,8 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
     {
         if (context.phase == InputActionPhase.Started)
         {
-            pc.sprint = !pc.sprint;
+            isSprintToggled = !isSprintToggled;
+            pc.sprint = isSprintToggled;
         }
     }
 
@@ -108,8 +111,9 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
     void Update()
     {
         // auto untoggle sprint
-        if ((Time.time - lastMove) > .05f && !isSprintHeld)
+        if (isSprintToggled && (Time.time - lastMove) > .05f && !isSprintHeld)
         {
+            isSprintToggled = false;
             pc.sprint = false;
         }
         // set last move
