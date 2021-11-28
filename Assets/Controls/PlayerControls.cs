@@ -183,6 +183,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""7e6ce1ad-000f-47b9-81f6-fd0505966c2f"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint Toggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""172b9752-af1f-4809-9111-e222762715b2"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",

@@ -538,8 +538,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 963194227}
-  rotationSpeed: 10
-  baseSpeed: 5
 --- !u!143 &1312479319
 CharacterController:
   m_ObjectHideFlags: 0
@@ -558,6 +556,20 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.85, z: 0}
+--- !u!114 &1312479320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312479314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e72c6833a0a051b43974dc06d26d2420, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 180
+  baseSpeed: 5
 --- !u!4 &1598192247 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7706473263717844851, guid: bda9b0031f8f38e4e98e7780f1fea9b8, type: 3}
@@ -576,15 +588,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4757523875212830894, guid: cf202fc21aa293b4194a6f88c909c043, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.0020162798
+      value: 0.015
       objectReference: {fileID: 0}
     - target: {fileID: 4757523875212830894, guid: cf202fc21aa293b4194a6f88c909c043, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.034671403
+      value: 0.082
       objectReference: {fileID: 0}
     - target: {fileID: 4757523875212830894, guid: cf202fc21aa293b4194a6f88c909c043, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.13299379
+      value: 0.012
       objectReference: {fileID: 0}
     - target: {fileID: 4757523875212830894, guid: cf202fc21aa293b4194a6f88c909c043, type: 3}
       propertyPath: m_LocalRotation.w
@@ -838,6 +850,6 @@ PrefabInstance:
     - target: {fileID: 7706473263718013779, guid: bda9b0031f8f38e4e98e7780f1fea9b8, type: 3}
       propertyPath: m_Icon
       value: 
-      objectReference: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bda9b0031f8f38e4e98e7780f1fea9b8, type: 3}
