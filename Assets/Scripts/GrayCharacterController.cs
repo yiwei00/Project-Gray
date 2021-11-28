@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,9 +7,10 @@ public class GrayCharacterController : MonoBehaviour
     // #defines
     float ROT_MULTIPLIER = 180 / Mathf.PI;
 
-    // player settings
+    // serialized members:
     public float rotationSpeed = 9.4f;
     public float baseSpeed = 5.0f;
+    public Transform hand = null;
 
     float sprintMult = 2.0f;
     float curSpeed = 0.0f;
@@ -31,6 +33,17 @@ public class GrayCharacterController : MonoBehaviour
     int move_state_hash;
     int roll_trigger_hash;
     int attack1_trigger_hash;
+
+    // hitpoints
+    Hitpoint hitpoint;
+
+    // effects
+    List<Effect> activeEffects; // TODO: implement custom priority queue to speed this up
+    float mSpeedFromEffects;
+    float rSpeedFromEffects;
+
+    // weapon
+    Weapon equippedWeapon;
 
     #region Endpoints
 
@@ -79,15 +92,28 @@ public class GrayCharacterController : MonoBehaviour
             roll_trigger_hash = Animator.StringToHash("roll_trigger");
             attack1_trigger_hash = Animator.StringToHash("attack1_trigger");
         }
+        // got hands?
+        if (!hand) hand = transform;
+        // hitpoints
+        hitpoint = GetComponent<Hitpoint>();
+        // active effects
+        activeEffects = new List<Effect>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!equippedWeapon)
+        {
+            equippedWeapon = GetComponentInChildren<Weapon>();
+            if (!equippedWeapon) equippedWeapon = hand.gameObject.GetComponentInChildren<Weapon>();
+        }
+        handleEffects();
         handleTransform();
         handleAttack();
         if (hasAnimator)
             handleAnim();
+        Debug.Log(string.Format("{0}: HP: {1}, Active Effect Count: {2}",gameObject.name,  hitpoint.curHP, activeEffects.Count));
     }
 
     // private methods:
@@ -96,6 +122,12 @@ public class GrayCharacterController : MonoBehaviour
         Vector3 displacement = Vector3.zero;
         Quaternion rot = transform.rotation;
         Quaternion moveRot = transform.rotation;
+        if (mSpeedFromEffects > 0 || rSpeedFromEffects > 0)
+        {
+            int i = 0;
+        }
+        float mspeed = mSpeedFromEffects + this.baseSpeed;
+        float rspeed = rSpeedFromEffects + this.rotationSpeed;
         // input is given
         if ((this.displacement != Vector3.zero))
         {
@@ -111,31 +143,31 @@ public class GrayCharacterController : MonoBehaviour
                 rollTriggered = false;
             }
             // rotation
-            if (rotationSpeed < 0)
+            if (rspeed < 0)
             {
                 rot = Quaternion.RotateTowards(transform.rotation, moveRot, 360f);
             }
             else
             {
-                rot = Quaternion.RotateTowards(transform.rotation, moveRot, ROT_MULTIPLIER * rotationSpeed * Time.deltaTime);
+                rot = Quaternion.RotateTowards(transform.rotation, moveRot, ROT_MULTIPLIER * rspeed * Time.deltaTime);
             }
             float rotAngle = Quaternion.Angle(rot, moveRot);
             // calculate rotation and displacement
             if (rotAngle < 10) // when rotational angle is small, simply move along
             {
-                displacement = baseSpeed * this.displacement;
+                displacement = mspeed * this.displacement;
             }
             else // when rotational angle is big, have player move slower as they'll be rotating
             {
                 System.Func<float, float> angMap = (x) => (1 + (-x / 180));
                 System.Func<float, float> expCurve = (x) => (Mathf.Pow(10, x) - 1) / (10 - 1);
                 float slowDown = expCurve(angMap(rotAngle));
-                displacement = slowDown * baseSpeed * this.displacement;
+                displacement = slowDown * mspeed * this.displacement;
             }
 
 
             // handle sprint
-            isSprinting = sprintToggled && displacement.magnitude >= (baseSpeed * .5f);
+            isSprinting = sprintToggled && displacement.magnitude >= (mspeed * .5f);
             if (isSprinting)
             {
                 displacement *= sprintMult;
@@ -146,7 +178,7 @@ public class GrayCharacterController : MonoBehaviour
         // roll
         if (isRolling()) // displacement for rolling
         {
-            displacement = transform.forward * baseSpeed * .8f;
+            displacement = transform.forward * mspeed * .8f;
         }
         characterController.SimpleMove(displacement);
         curSpeed = displacement.magnitude;
@@ -162,6 +194,8 @@ public class GrayCharacterController : MonoBehaviour
                 if (hasAnimator)
                     animator.SetTrigger(attack1_trigger_hash);
                 attackStarted = true;
+                if (equippedWeapon)
+                    equippedWeapon.newAtkCycle();
             }
             attackTriggered = false;
         }
@@ -187,6 +221,71 @@ public class GrayCharacterController : MonoBehaviour
         animator.SetInteger(move_state_hash, move_state);
     }
 
+    private void handleEffects()
+    {
+        float mSpeedStaticDiff = 0.0f;
+        float rSpeedStaticDiff = 0.0f;
+        float mSpeedPercentdiff = 1.0f;
+        float rSpeedPercentdiff = 1.0f;
+        List<Effect> to_remove = new List<Effect>();
+        foreach (Effect effect in activeEffects)
+        {
+            float duration = Mathf.Min(Time.deltaTime, effect.duration);
+            effect.duration = effect.duration - duration;
+            if (effect.duration <= 0)
+            {
+                to_remove.Add(effect);
+            }
+            if (Hitpoint.isHitpointEffect(effect))
+            {
+                hitpoint.applyEffect(effect, duration);
+            }
+            else
+            {
+                switch (effect.effectType)
+                {
+                    case EffectType.Move_Slowdown:
+                        mSpeedStaticDiff -= effect.staticStrength;
+                        mSpeedPercentdiff *= Mathf.Max(1 - effect.percentStrength, 0);
+                        break;
+                    case EffectType.Move_Speedup:
+                        mSpeedStaticDiff += effect.staticStrength;
+                        mSpeedPercentdiff *= effect.percentStrength;
+                        break;
+                    case EffectType.Turn_Slowdown:
+                        rSpeedStaticDiff -= effect.staticStrength;
+                        rSpeedPercentdiff *= Mathf.Max(1 - effect.percentStrength, 0);
+                        break;
+                    case EffectType.Turn_Speedup:
+                        rSpeedStaticDiff += effect.staticStrength;
+                        rSpeedPercentdiff *= effect.percentStrength;
+                        break;
+                }
+            }
+        }
+        while ((activeEffects.Count > 0) && activeEffects[activeEffects.Count - 1].duration <= 0)
+            activeEffects.RemoveAt(activeEffects.Count - 1);
+        mSpeedFromEffects = mSpeedStaticDiff + (mSpeedPercentdiff - 1) * baseSpeed;
+        rSpeedFromEffects = rSpeedStaticDiff + (rSpeedPercentdiff - 1) * rotationSpeed;
+        mSpeedFromEffects = Mathf.Max(mSpeedFromEffects, -baseSpeed);
+        rSpeedFromEffects = Mathf.Max(rSpeedFromEffects, -rotationSpeed);
+    }
+
+    public void applyEffect(Effect e)
+    {
+        activeEffects.Add(e.clone());
+        // sort desc
+        activeEffects.Sort((a, b) => b.CompareTo(a));
+    }
+
+    public void applyEffect(List<Effect> effects)
+    {
+        var toApply = effects.ConvertAll<Effect>(e => e.clone());
+        activeEffects.AddRange(toApply);
+        // sort desc
+        activeEffects.Sort((a, b) => b.CompareTo(a));
+    }
+
     public bool isRolling()
     {
         if (!hasAnimator) return false;
@@ -200,7 +299,7 @@ public class GrayCharacterController : MonoBehaviour
         return false;
     }
 
-    private bool inAttackAnim()
+    public bool inAttackAnim()
     {
         if (!hasAnimator) return false;
         return (

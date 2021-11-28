@@ -1,20 +1,21 @@
 // File manages user input
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour, PlayerControls.IGameplayActions
 {
-
     // camera
     public Camera cam;
     float camOffset = 5f;
     float camHeight = 10f;
     float camAngle = 60f;
-
+    
+    // other components
     PlayerControls controls; // for getting control inputs
     GrayCharacterController pc; // player character controller
 
+    // state keeping to ensure smooth controls
     float INPUT_DELAY = .3f;
     Vector3 displacement;
     bool isSprintHeld;
@@ -22,6 +23,10 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
     float lastMove;
     float lastAttack;
     float lastRoll;
+
+    // player inventory
+    List<InventoryItem> inventory;
+    Weapon equipedWeapon;
 
     #region Input systems
     public void OnEnable()
@@ -107,6 +112,7 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
         lastMove= -INPUT_DELAY - 1;
         lastAttack= -INPUT_DELAY - 1;
         lastRoll= -INPUT_DELAY - 1;
+        inventory = new List<InventoryItem>();
     }
     void Update()
     {
