@@ -3,9 +3,31 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour
 {
-    InventoryMenu invMenu;
-    InventoryItem item;
+    public Color highlightFrameColor;
+    Color defaultFrameColor;
+    InventoryItem _item;
     Image icon;
+    Image frame;
+    Button button;
+    InventoryMenu invMenu;
+
+    public InventoryMenu inventory
+    {
+        get => invMenu;
+        set => invMenu = value;
+    }
+
+    public InventoryItem item
+    {
+        get => _item;
+        private set => _item = value;
+    }
+
+    public void toggleHighlight()
+    {
+        frame.color = (frame.color == defaultFrameColor) ?
+            highlightFrameColor : defaultFrameColor;
+    }
 
     public bool isEmpty
     {
@@ -15,12 +37,11 @@ public class InventorySlot : MonoBehaviour
     private void Awake()
     {
         item = InventoryItem.empty;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
+        button = GetComponent<Button>();
+        button.onClick.AddListener(() => invMenu.setupSwap(this));
         icon = transform.Find("Icon").GetComponent<Image>();
-        invMenu = transform.parent.parent.GetComponent<InventoryMenu>();
+        frame = transform.Find("Frame").GetComponent<Image>();
+        defaultFrameColor = frame.color;
     }
 
     // Update is called once per frame
@@ -34,10 +55,11 @@ public class InventorySlot : MonoBehaviour
 
     public void addItem(InventoryItem newItem)
     {
-        if (isEmpty)
+        if (!isEmpty)
         {
             return;
         }
+        item = newItem;
         icon.enabled = true;
         icon.sprite = newItem.icon;
     }
@@ -48,5 +70,23 @@ public class InventorySlot : MonoBehaviour
         item = InventoryItem.empty;
         icon.enabled = false;
         return temp;
+    }
+
+    public void swap(InventorySlot other)
+    {
+        if (other.isEmpty)
+        {
+            other.addItem(popItem());
+        } 
+        else if (isEmpty)
+        {
+            addItem(other.popItem());
+        }
+        else
+        {
+            var myItem = popItem();
+            addItem(other.popItem());
+            other.addItem(myItem);
+        }
     }
 }

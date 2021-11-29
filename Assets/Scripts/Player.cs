@@ -5,6 +5,12 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    private static Player _instance;
+
+    public static Player Instance
+    {
+        get => _instance;
+    }
     // camera
     public Camera cam;
     float camOffset = 5f;
@@ -14,7 +20,7 @@ public class Player : MonoBehaviour
     // other components
     PlayerControls controls; // for getting control inputs
     PlayerInput input;
-    GrayCharacterController pc; // player character controller
+    GrayCharacterController _pc; // player character controller
     public InventoryMenu invMenu;
 
     // state keeping to ensure smooth controls
@@ -26,9 +32,11 @@ public class Player : MonoBehaviour
     float lastAttack;
     float lastRoll;
 
-    // player inventory
-    List<InventoryItem> inventory;
-    Weapon equipedWeapon;
+    public GrayCharacterController pc
+    {
+        get => _pc;
+        private set => _pc = value;
+    }
 
     #region Input systems
     public void OnEnable()
@@ -128,6 +136,17 @@ public class Player : MonoBehaviour
         action.canceled += callback;
     }
 
+    private void Awake()  // singleton class
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        } 
+        else
+        {
+            _instance = this;
+        }
+    }
 
     void Start()
     {
@@ -146,10 +165,11 @@ public class Player : MonoBehaviour
         lastMove = -INPUT_DELAY - 1;
         lastAttack= -INPUT_DELAY - 1;
         lastRoll= -INPUT_DELAY - 1;
-        inventory = new List<InventoryItem>();
 
         invMenu.gameObject.SetActive(false);
         invMenu.player = this;
+
+        pc.equipNewWeapon(invMenu.equippedWeapon);
     }
     void Update()
     {

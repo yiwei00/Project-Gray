@@ -4,8 +4,11 @@ using UnityEditor;
 
 public class Weapon : MonoBehaviour
 {
+    public string weaponName;
     public static Weapon BasicWeapon;
     public List<Effect> weaponEffects;
+    public Sprite icon;
+    public string description;
 
     // collidable weapons are like swords
     // non-collidable weapons are like wands
@@ -34,6 +37,8 @@ public class Weapon : MonoBehaviour
         // not ready yet
         if (!isCollidable || !attachedCharacter.inAttackAnim()) return;
         if (other.gameObject == attachedTo) return;
+        var targetChar = other.gameObject.GetComponent<GrayCharacterController>();
+        if (targetChar && targetChar.isRolling()) return;
         if (alreadyHit.Find((x) => x == other)) return;
         alreadyHit.Add(other);
         Debug.Log(string.Format("Hit {0}", other.gameObject.name));
@@ -47,7 +52,7 @@ public class Weapon : MonoBehaviour
 
     }
 
-    void Start()
+    void OnEnable()
     {
         if (isCollidable)
         {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class GrayCharacterController : MonoBehaviour
 {
@@ -11,6 +10,7 @@ public class GrayCharacterController : MonoBehaviour
     public float rotationSpeed = 9.4f;
     public float baseSpeed = 5.0f;
     public Transform hand = null;
+    public GameObject defaultWeapon;
 
     float sprintMult = 2.0f;
     float curSpeed = 0.0f;
@@ -25,6 +25,8 @@ public class GrayCharacterController : MonoBehaviour
     bool rollStarted;
     bool attackTriggered;
     bool attackStarted;
+    bool newWeaponFlag;
+    GameObject newWeaponObj;
 
     // animation related
     bool hasAnimator;
@@ -42,8 +44,13 @@ public class GrayCharacterController : MonoBehaviour
     float mSpeedFromEffects;
     float rSpeedFromEffects;
 
-    // weapon
+    // weapon n equpiment
     Weapon equippedWeapon;
+
+    public Weapon weapon
+    {
+        get => equippedWeapon;
+    }
 
     #region Endpoints
 
@@ -103,17 +110,32 @@ public class GrayCharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!equippedWeapon)
+        if (hasAnimator && !equippedWeapon) // equip weapon if has animation
         {
             equippedWeapon = GetComponentInChildren<Weapon>();
             if (!equippedWeapon) equippedWeapon = hand.gameObject.GetComponentInChildren<Weapon>();
+            if (!equippedWeapon && defaultWeapon)
+            {
+                equipNewWeapon(defaultWeapon);
+            }
         }
+        handleWeaponEquip();
         handleEffects();
         handleTransform();
         handleAttack();
         if (hasAnimator)
             handleAnim();
         Debug.Log(string.Format("{0}: HP: {1}, Active Effect Count: {2}",gameObject.name,  hitpoint.curHP, activeEffects.Count));
+    }
+
+    public bool equipNewWeapon(GameObject newWeapon)
+    {
+        var weapon = newWeapon.GetComponent<Weapon>();
+        if (!weapon) return false;
+
+        newWeaponFlag = true;
+        newWeaponObj = newWeapon;
+        return true;
     }
 
     // private methods:
@@ -267,8 +289,39 @@ public class GrayCharacterController : MonoBehaviour
         rSpeedFromEffects = Mathf.Max(rSpeedFromEffects, -rotationSpeed);
     }
 
+    public void handleWeaponEquip()
+    {
+        if (newWeaponFlag && canMove())
+        {
+            // get new weapon
+            var newWeapon = Instantiate(newWeaponObj);
+            newWeaponFlag = false;
+            newWeaponObj = null;
+            // remove current weapon
+            if (equippedWeapon)
+            {
+                var curWeapon = equippedWeapon.gameObject;
+                Destroy(curWeapon);
+            }
+
+            equippedWeapon = newWeapon.GetComponent<Weapon>();
+            newWeapon.transform.parent = transform;
+            equippedWeapon.enabled = true;
+        }
+
+    }
+
     public void applyEffect(Effect e)
     {
+        switch (e.effectType)
+        {
+            case EffectType.Heal:
+            case EffectType.Pure_Damage:
+            case EffectType.Physical_Damage:
+            case EffectType.Magical_Damage:
+                e.duration = 0;
+                break;
+        }
         activeEffects.Add(e.clone());
         // sort desc
         activeEffects.Sort((a, b) => b.CompareTo(a));

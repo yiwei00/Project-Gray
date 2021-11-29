@@ -20,9 +20,14 @@ public class InventoryItem
         get => _icon;
     }
 
-    public virtual Weapon getItem(Weapon type)
+    public virtual GameObject getItem()
     {
         return null;
+    }
+
+    public virtual bool isWeapon()
+    {
+        return false;
     }
 
     protected InventoryItem(string title, string description, Sprite icon)
@@ -36,18 +41,24 @@ public class InventoryItem
 
 public class WeaponInventoryItem : InventoryItem
 {
-    Weapon storedWeapon;
-    public WeaponInventoryItem(
-        string title, 
-        string description, 
-        Sprite icon,
-        Weapon weapon
-     ) : base(title, description, icon)
+    GameObject storedWeapon;
+
+    public WeaponInventoryItem(GameObject weapon)
+        : base("", "", null)
     {
+        Weapon weaponComponent = weapon.GetComponent<Weapon>();
         storedWeapon = weapon;
+        _title = weaponComponent.weaponName;
+        _description = weaponComponent.description;
+        _icon = weaponComponent.icon;
     }
-    public override Weapon getItem(Weapon type)
+    public override GameObject getItem()
     {
         return storedWeapon;
+    }
+
+    public override bool isWeapon()
+    {
+        return storedWeapon != null;
     }
 }

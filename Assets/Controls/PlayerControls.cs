@@ -332,7 +332,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""id"": ""40620a78-7eec-4199-885b-3240398fced5"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""ScrollWheel"",
@@ -348,7 +348,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""id"": ""12f08b81-79dd-424f-aa49-ace1c6bb0c87"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""RightClick"",
@@ -356,7 +356,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""id"": ""92427fe2-c03e-48cc-93c0-3092fcef2c8b"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""TrackedDevicePosition"",
@@ -380,7 +380,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""id"": ""0c85d57a-ab76-4681-92e6-c74b6145fedb"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
