@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour, PlayerControls.IGameplayActions
+public class Player : MonoBehaviour
 {
     // camera
     public Camera cam;
     float camOffset = 5f;
     float camHeight = 10f;
     float camAngle = 60f;
-    
+
     // other components
     PlayerControls controls; // for getting control inputs
+    PlayerInput input;
     GrayCharacterController pc; // player character controller
+    public InventoryMenu invMenu;
 
     // state keeping to ensure smooth controls
     float INPUT_DELAY = .3f;
@@ -34,9 +36,6 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
         if (controls == null)
         {
             controls = new PlayerControls();
-            // Tell the "gameplay" action map that we want to get told about
-            // when actions get triggered.
-            controls.gameplay.SetCallbacks(this);
         }
         controls.gameplay.Enable();
     }
@@ -69,7 +68,7 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
             isSprintHeld = true;
             pc.sprint = true;
         }
-        else if( context.phase == InputActionPhase.Canceled)
+        else if (context.phase == InputActionPhase.Canceled)
         {
             isSprintHeld = false;
             pc.sprint = false;
@@ -93,6 +92,23 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
             lastAttack = Time.time;
         }
     }
+
+    public void OnInventoryMenu(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            input.SwitchCurrentActionMap("UI");
+            Time.timeScale = 0;
+            invMenu.gameObject.SetActive(true);
+        }
+    }
+
+    public void OnInventoryMenuExit()
+    {
+        input.SwitchCurrentActionMap("gameplay");
+        Time.timeScale = 1;
+        invMenu.gameObject.SetActive(false);
+    }
     #endregion
 
     public float lastInput
@@ -103,16 +119,37 @@ public class Player : MonoBehaviour, PlayerControls.IGameplayActions
             return Mathf.Max(Mathf.Max(lastMove, lastAttack), Mathf.Max(lastRoll, 0));
         }
     }
+    public static void hookInputAction(InputAction action, System.Action<InputAction.CallbackContext> callback)
+    {
+        if (!action.enabled)
+            action.Enable();
+        action.started += callback;
+        action.performed += callback;
+        action.canceled += callback;
+    }
+
 
     void Start()
     {
         // get components
+        input = GetComponent<PlayerInput>();
         pc = GetComponent<GrayCharacterController>();
 
-        lastMove= -INPUT_DELAY - 1;
+        hookInputAction(controls.gameplay.Movement, OnMovement);
+        hookInputAction(controls.gameplay.SprintToggle, OnSprintToggle);
+        hookInputAction(controls.gameplay.SprintHold, OnSprintHold);
+        hookInputAction(controls.gameplay.Roll, OnRoll);
+        hookInputAction(controls.gameplay.Attack, OnAttack);
+        hookInputAction(controls.gameplay.InventoryMenu, OnInventoryMenu);
+
+
+        lastMove = -INPUT_DELAY - 1;
         lastAttack= -INPUT_DELAY - 1;
         lastRoll= -INPUT_DELAY - 1;
         inventory = new List<InventoryItem>();
+
+        invMenu.gameObject.SetActive(false);
+        invMenu.player = this;
     }
     void Update()
     {

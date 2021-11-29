@@ -122,10 +122,6 @@ public class GrayCharacterController : MonoBehaviour
         Vector3 displacement = Vector3.zero;
         Quaternion rot = transform.rotation;
         Quaternion moveRot = transform.rotation;
-        if (mSpeedFromEffects > 0 || rSpeedFromEffects > 0)
-        {
-            int i = 0;
-        }
         float mspeed = mSpeedFromEffects + this.baseSpeed;
         float rspeed = rSpeedFromEffects + this.rotationSpeed;
         // input is given
@@ -225,8 +221,8 @@ public class GrayCharacterController : MonoBehaviour
     {
         float mSpeedStaticDiff = 0.0f;
         float rSpeedStaticDiff = 0.0f;
-        float mSpeedPercentdiff = 1.0f;
-        float rSpeedPercentdiff = 1.0f;
+        float mSpeedPercentDiff = 1.0f;
+        float rSpeedPercentDiff = 1.0f;
         List<Effect> to_remove = new List<Effect>();
         foreach (Effect effect in activeEffects)
         {
@@ -246,27 +242,27 @@ public class GrayCharacterController : MonoBehaviour
                 {
                     case EffectType.Move_Slowdown:
                         mSpeedStaticDiff -= effect.staticStrength;
-                        mSpeedPercentdiff *= Mathf.Max(1 - effect.percentStrength, 0);
+                        mSpeedPercentDiff *= Mathf.Max(1 - effect.percentStrength, 0);
                         break;
                     case EffectType.Move_Speedup:
                         mSpeedStaticDiff += effect.staticStrength;
-                        mSpeedPercentdiff *= effect.percentStrength;
+                        mSpeedPercentDiff *= effect.percentStrength;
                         break;
                     case EffectType.Turn_Slowdown:
                         rSpeedStaticDiff -= effect.staticStrength;
-                        rSpeedPercentdiff *= Mathf.Max(1 - effect.percentStrength, 0);
+                        rSpeedPercentDiff *= Mathf.Max(1 - effect.percentStrength, 0);
                         break;
                     case EffectType.Turn_Speedup:
                         rSpeedStaticDiff += effect.staticStrength;
-                        rSpeedPercentdiff *= effect.percentStrength;
+                        rSpeedPercentDiff *= effect.percentStrength;
                         break;
                 }
             }
         }
         while ((activeEffects.Count > 0) && activeEffects[activeEffects.Count - 1].duration <= 0)
             activeEffects.RemoveAt(activeEffects.Count - 1);
-        mSpeedFromEffects = mSpeedStaticDiff + (mSpeedPercentdiff - 1) * baseSpeed;
-        rSpeedFromEffects = rSpeedStaticDiff + (rSpeedPercentdiff - 1) * rotationSpeed;
+        mSpeedFromEffects = mSpeedStaticDiff + (mSpeedPercentDiff - 1) * baseSpeed;
+        rSpeedFromEffects = rSpeedStaticDiff + (rSpeedPercentDiff - 1) * rotationSpeed;
         mSpeedFromEffects = Mathf.Max(mSpeedFromEffects, -baseSpeed);
         rSpeedFromEffects = Mathf.Max(rSpeedFromEffects, -rotationSpeed);
     }

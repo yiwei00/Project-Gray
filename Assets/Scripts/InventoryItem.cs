@@ -1,11 +1,12 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryItem
 {
+    public static InventoryItem empty = new InventoryItem("", "", null);
+
     protected string _title;
     protected string _description;
-    protected Texture2D _icon;
+    protected Sprite _icon;
     public string description
     {
         get => _description;
@@ -14,7 +15,7 @@ public class InventoryItem
     {
         get => _title;
     }
-    public Texture2D icon
+    public Sprite icon
     {
         get => _icon;
     }
@@ -24,7 +25,7 @@ public class InventoryItem
         return null;
     }
 
-    protected InventoryItem(string title, string description, Texture2D icon)
+    protected InventoryItem(string title, string description, Sprite icon)
     {
         _title = title;
         _description = description;
@@ -33,19 +34,13 @@ public class InventoryItem
 
 }
 
-public class EmptyInventoryItem : InventoryItem
-{
-    public EmptyInventoryItem() : base("", "", null) {}
-    
-}
-
 public class WeaponInventoryItem : InventoryItem
 {
     Weapon storedWeapon;
     public WeaponInventoryItem(
         string title, 
         string description, 
-        Texture2D icon,
+        Sprite icon,
         Weapon weapon
      ) : base(title, description, icon)
     {

@@ -14,6 +14,12 @@ public class Weapon : MonoBehaviour
 
     GameObject attachedTo;
     GrayCharacterController attachedCharacter;
+
+    public GameObject holder
+    {
+        get => attachedTo;
+        set => attachedTo = value;
+    }
    
     // positional
     public Vector3 attachPos;
@@ -55,7 +61,8 @@ public class Weapon : MonoBehaviour
                 throw new UnityException("Weapon collider need to be trigger");
             }
         }
-        attachedTo = transform.parent.gameObject;
+        if (!attachedTo)
+            attachedTo = transform.parent.gameObject;
         attachedCharacter = attachedTo.GetComponent<GrayCharacterController>();
         if (!attachedCharacter)
             throw new UnityException("Weapon not attached to viable character");
