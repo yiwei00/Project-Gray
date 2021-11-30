@@ -117,8 +117,41 @@ public class Player : MonoBehaviour
         Time.timeScale = 1;
         invMenu.gameObject.SetActive(false);
     }
+
+    public void OnPickup(InputAction.CallbackContext context)
+    { 
+        if (context.phase == InputActionPhase.Started)
+        {
+            pickUpLoot();
+        }
+    }
+
     #endregion
 
+    public void pickUpLoot()
+    {
+        var colliders = Physics.OverlapSphere(transform.position, 3);
+        float minDist = Mathf.Infinity;
+        Collider closestLoot = null;
+        foreach (var collider in colliders)
+        {
+            if (collider.gameObject.CompareTag("Loot"))
+            {
+                float dist = (collider.transform.position - transform.position).magnitude;
+                if (dist < minDist)
+                {
+                    closestLoot = collider;
+                    minDist = dist;
+                }
+            }
+        }
+        if (minDist < Mathf.Infinity)
+        {
+            var loot = closestLoot.gameObject.GetComponent<LootItem>();
+            invMenu.addItem(loot.item);
+            Destroy(closestLoot.gameObject);
+        }
+    }
     public float lastInput
     {
         get
@@ -160,6 +193,7 @@ public class Player : MonoBehaviour
         hookInputAction(controls.gameplay.Roll, OnRoll);
         hookInputAction(controls.gameplay.Attack, OnAttack);
         hookInputAction(controls.gameplay.InventoryMenu, OnInventoryMenu);
+        hookInputAction(controls.gameplay.Pickup, OnPickup);
 
 
         lastMove = -INPUT_DELAY - 1;

@@ -10,6 +10,10 @@ public class Hitpoint : MonoBehaviour
 {
     public int maxHP;
     private float _curHP;
+    public int curHP
+    {
+        get => Mathf.RoundToInt(_curHP);
+    }
 
     private float[] _resistance;
     public Resistances resist;
@@ -52,14 +56,9 @@ public class Hitpoint : MonoBehaviour
         }
     }
 
-    public float curHP
-    {
-        get => _curHP;
-    }
-
     public void heal(float amount)
     {
-        _curHP = Mathf.Clamp(_curHP + amount, 0, maxHP);
+        _curHP = Mathf.Clamp(_curHP + amount, 0f, maxHP);
     }
 
     public void damage(float[] dmg)

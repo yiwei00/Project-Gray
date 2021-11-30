@@ -8,6 +8,7 @@ public class InventorySlot : MonoBehaviour
     InventoryItem _item;
     Image icon;
     Image frame;
+    Image background;
     Button button;
     InventoryMenu invMenu;
 
@@ -41,7 +42,11 @@ public class InventorySlot : MonoBehaviour
         button.onClick.AddListener(() => invMenu.setupSwap(this));
         icon = transform.Find("Icon").GetComponent<Image>();
         frame = transform.Find("Frame").GetComponent<Image>();
+        background = GetComponent<Image>();
+
         defaultFrameColor = frame.color;
+
+        resetColor();
     }
 
     // Update is called once per frame
@@ -52,16 +57,26 @@ public class InventorySlot : MonoBehaviour
             icon.enabled = false;
         }
     }
-
+    
+    private void resetColor()
+    {
+        Color transWhite = Color.white;
+        transWhite.a = .3f;
+        background.color = transWhite;
+    }
     public void addItem(InventoryItem newItem)
     {
-        if (!isEmpty)
+        if (!isEmpty || newItem == InventoryItem.empty)
         {
             return;
         }
         item = newItem;
         icon.enabled = true;
         icon.sprite = newItem.icon;
+        // set color
+        Color rarityColor = LootItem.rarityToColor(newItem.rarity);
+        rarityColor.a = .5f;
+        background.color = rarityColor;
     }
 
     public InventoryItem popItem()
@@ -69,6 +84,8 @@ public class InventorySlot : MonoBehaviour
         var temp = item;
         item = InventoryItem.empty;
         icon.enabled = false;
+        // remove color
+        resetColor();
         return temp;
     }
 

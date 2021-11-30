@@ -6,15 +6,16 @@ TagManager:
   tags:
   - Obstacle
   - EnemyNPC
+  - Loot
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Environment
   - Water
   - UI
-  - 
-  - 
+  - Characters
+  - WorldEntity
   - 
   - 
   - 

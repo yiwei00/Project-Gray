@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e88e4c4a42c55b418edc4104ef0c11f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: Greatsword Malone
+  weaponName: Melon Lord's Greatsword
   weaponEffects:
   - effectType: 2
     name: sword_dmg
@@ -135,6 +135,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 458b96fa7bc9e4c409f9b7f0b8bb2630, type: 3}
   description: This fabled blade was once weilded by the melon lord themself to slay
     the evil tomato beats.
+  rarity: 4
   isCollidable: 1
   attachPos: {x: 0.015, y: 0.082, z: 0.012}
   attachRot: {x: 0, y: -96.459, z: 44.856}

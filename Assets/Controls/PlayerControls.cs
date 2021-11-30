@@ -65,6 +65,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Pickup"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3b51029-fe2b-40bc-9b9f-6161c59f5644"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -285,6 +293,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Inventory Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f738c4cc-822a-46b5-a9e2-b29a1b870fda"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pickup"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5dc0a94d-d7c6-462f-9348-4456a9e3c598"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pickup"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -837,6 +867,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_gameplay_Roll = m_gameplay.FindAction("Roll", throwIfNotFound: true);
         m_gameplay_Attack = m_gameplay.FindAction("Attack", throwIfNotFound: true);
         m_gameplay_InventoryMenu = m_gameplay.FindAction("Inventory Menu", throwIfNotFound: true);
+        m_gameplay_Pickup = m_gameplay.FindAction("Pickup", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -905,6 +936,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_gameplay_Roll;
     private readonly InputAction m_gameplay_Attack;
     private readonly InputAction m_gameplay_InventoryMenu;
+    private readonly InputAction m_gameplay_Pickup;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -915,6 +947,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Roll => m_Wrapper.m_gameplay_Roll;
         public InputAction @Attack => m_Wrapper.m_gameplay_Attack;
         public InputAction @InventoryMenu => m_Wrapper.m_gameplay_InventoryMenu;
+        public InputAction @Pickup => m_Wrapper.m_gameplay_Pickup;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -942,6 +975,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @InventoryMenu.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnInventoryMenu;
                 @InventoryMenu.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnInventoryMenu;
                 @InventoryMenu.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnInventoryMenu;
+                @Pickup.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPickup;
+                @Pickup.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPickup;
+                @Pickup.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPickup;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -964,6 +1000,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @InventoryMenu.started += instance.OnInventoryMenu;
                 @InventoryMenu.performed += instance.OnInventoryMenu;
                 @InventoryMenu.canceled += instance.OnInventoryMenu;
+                @Pickup.started += instance.OnPickup;
+                @Pickup.performed += instance.OnPickup;
+                @Pickup.canceled += instance.OnPickup;
             }
         }
     }
@@ -1089,6 +1128,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnRoll(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnInventoryMenu(InputAction.CallbackContext context);
+        void OnPickup(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -117,6 +117,7 @@ MonoBehaviour:
     percentStrength: 0
   icon: {fileID: 21300000, guid: 5fd50594014b70e48bd6993443d46b32, type: 3}
   description: Sword used by countless heros on their quests of glory.
+  rarity: 2
   isCollidable: 1
   attachPos: {x: 0.014, y: 0.061, z: -0.066}
   attachRot: {x: 178.287, y: -86.58899, z: -81.33701}

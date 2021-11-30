@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    public InventoryMenu inventory;
     public GameObject weapon1;
+    public GameObject lootPrefab;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,7 +14,8 @@ public class Test : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inventory.addItem(new WeaponInventoryItem(weapon1));
+        var lootItem = Instantiate(lootPrefab);
+        lootItem.GetComponent<LootItem>().item = new WeaponInventoryItem(weapon1);
         this.enabled = false;
     }
 }

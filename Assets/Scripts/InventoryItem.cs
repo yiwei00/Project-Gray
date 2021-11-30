@@ -7,17 +7,27 @@ public class InventoryItem
     protected string _title;
     protected string _description;
     protected Sprite _icon;
+    protected LootRarity _rarity;
     public string description
     {
         get => _description;
+        set => _title = value;
     }
     public string title
     {
         get => _title;
+        set => _title = value;
     }
     public Sprite icon
     {
         get => _icon;
+        set => _icon = value;
+    }
+
+    public LootRarity rarity
+    {
+        get => _rarity;
+        set => _rarity = value;
     }
 
     public virtual GameObject getItem()
@@ -51,6 +61,7 @@ public class WeaponInventoryItem : InventoryItem
         _title = weaponComponent.weaponName;
         _description = weaponComponent.description;
         _icon = weaponComponent.icon;
+        _rarity = weaponComponent.rarity;
     }
     public override GameObject getItem()
     {

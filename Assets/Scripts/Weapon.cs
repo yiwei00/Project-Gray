@@ -9,6 +9,7 @@ public class Weapon : MonoBehaviour
     public List<Effect> weaponEffects;
     public Sprite icon;
     public string description;
+    public LootRarity rarity;
 
     // collidable weapons are like swords
     // non-collidable weapons are like wands
