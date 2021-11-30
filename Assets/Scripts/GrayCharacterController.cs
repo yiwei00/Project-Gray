@@ -40,6 +40,7 @@ public class GrayCharacterController : MonoBehaviour
     Hitpoint hitpoint;
 
     // effects
+    [SerializeField]
     List<Effect> activeEffects; // TODO: implement custom priority queue to speed this up
     float mSpeedFromEffects;
     float rSpeedFromEffects;
@@ -311,7 +312,7 @@ public class GrayCharacterController : MonoBehaviour
 
     }
 
-    public void applyEffect(Effect e)
+    private void applySingleEffect(Effect e)
     {
         switch (e.effectType)
         {
@@ -322,15 +323,26 @@ public class GrayCharacterController : MonoBehaviour
                 e.duration = 0;
                 break;
         }
+        foreach (var activeEffect in activeEffects)
+        {
+            if (activeEffect.name == e.name && activeEffect.effectType == e.effectType)
+            {
+                activeEffect.duration = Mathf.Max(activeEffect.duration, e.duration);
+                activeEffect.staticStrength = Mathf.Max(activeEffect.staticStrength, e.staticStrength);
+                activeEffect.percentStrength = Mathf.Max(activeEffect.percentStrength, e.percentStrength);
+                return;
+            }
+        }
         activeEffects.Add(e.clone());
-        // sort desc
-        activeEffects.Sort((a, b) => b.CompareTo(a));
     }
 
     public void applyEffect(List<Effect> effects)
     {
         var toApply = effects.ConvertAll<Effect>(e => e.clone());
-        activeEffects.AddRange(toApply);
+        foreach (var e in toApply)
+        {
+            applySingleEffect(e);
+        }
         // sort desc
         activeEffects.Sort((a, b) => b.CompareTo(a));
     }
