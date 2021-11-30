@@ -53,14 +53,6 @@ public class InventoryMenu : MonoBehaviour
         }
     }
 
-    public void OnSubmit(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Started)
-        { 
-            var selected = EventSystem.current.currentSelectedGameObject.GetComponent<InventorySlot>();
-            setupSwap(selected);
-        }
-    }
 
     #endregion
 
@@ -134,7 +126,6 @@ public class InventoryMenu : MonoBehaviour
         input = GetComponent<PlayerInput>();
         Player.hookInputAction(controls.UI.MenuExit, OnMenuExit);
         Player.hookInputAction(controls.UI.Cancel, OnMenuExit);
-        Player.hookInputAction(controls.UI.Submit, OnSubmit);
 
         player = FindObjectOfType<Player>();
         weaponSlot = transform.Find("WeaponSlot").GetComponent<InventorySlot>();
