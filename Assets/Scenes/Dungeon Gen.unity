@@ -354,7 +354,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1332222419}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 60, z: 0}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -405,26 +405,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bottomRooms:
   - {fileID: 1128548662736828114, guid: 225aa307d53324a1fa898ce94b5bc043, type: 3}
-  - {fileID: 1128548662736828114, guid: dd5eb571e4ed2413f951a3706c42443c, type: 3}
   - {fileID: 1128548662736828114, guid: 7bc047961a5384367b096f4b6deae6ad, type: 3}
+  - {fileID: 1128548662736828114, guid: dd5eb571e4ed2413f951a3706c42443c, type: 3}
   - {fileID: 1128548662736828114, guid: 29f696d27d2dd4ccf8162c08f7f68ec6, type: 3}
   topRooms:
   - {fileID: 1128548662736828114, guid: a0a3f0b16d3a6437586f941e5c28d0d8, type: 3}
-  - {fileID: 1128548662736828114, guid: d77c920a4c16e4622b9f9d48beb87a1b, type: 3}
   - {fileID: 1128548662736828114, guid: 9a77265b483d641a8af1bf321ca9eddb, type: 3}
   - {fileID: 1128548662736828114, guid: fce0091014e3946989e422328100d0a8, type: 3}
+  - {fileID: 1128548662736828114, guid: d77c920a4c16e4622b9f9d48beb87a1b, type: 3}
   leftRooms:
   - {fileID: 1128548662736828114, guid: 1869eae1bba684772b4acb3a18bc8cb1, type: 3}
-  - {fileID: 1128548662736828114, guid: 779db07b2f72249ec8261727f9b60b04, type: 3}
   - {fileID: 1128548662736828114, guid: fd039d9a85a794fd78949a5d8a126635, type: 3}
+  - {fileID: 1128548662736828114, guid: 779db07b2f72249ec8261727f9b60b04, type: 3}
   - {fileID: 1128548662736828114, guid: 3babb7a2a631b41e78c3b91b8e479853, type: 3}
   rightRooms:
-  - {fileID: 1128548662736828114, guid: b1c91d4c8a6eb467d9d92ff6db07b52f, type: 3}
   - {fileID: 1128548662736828114, guid: 37f2b59c7bb9448308a8f207891b2269, type: 3}
-  - {fileID: 1128548662736828114, guid: 367269351d67042d8843f5925852bab1, type: 3}
   - {fileID: 1128548662736828114, guid: f359bd9dee31a487b9a38403fe461340, type: 3}
+  - {fileID: 1128548662736828114, guid: 367269351d67042d8843f5925852bab1, type: 3}
+  - {fileID: 1128548662736828114, guid: b1c91d4c8a6eb467d9d92ff6db07b52f, type: 3}
   closedRoom: {fileID: 1128548662736828114, guid: 4d847e611d088499e9ad69720b2f0cee,
     type: 3}
   rooms: []
-  waitTime: 2
+  waitTime: 4
   boss: {fileID: 1898445321837384, guid: 09e14c596e782a742829f1166838514d, type: 3}

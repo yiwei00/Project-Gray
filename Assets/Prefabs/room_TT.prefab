@@ -136,7 +136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openingDirection: 1
   spawned: 0
-  waitTime: 4
+  waitTime: 2
 --- !u!65 &5096900434178842674
 BoxCollider:
   m_ObjectHideFlags: 0

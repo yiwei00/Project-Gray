@@ -105,7 +105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openingDirection: 4
   spawned: 0
-  waitTime: 4
+  waitTime: 2
 --- !u!54 &6550916541580060782
 Rigidbody:
   m_ObjectHideFlags: 0
