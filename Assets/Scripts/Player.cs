@@ -32,6 +32,8 @@ public class Player : MonoBehaviour
     float lastAttack;
     float lastRoll;
 
+    GameObject lootItemPrefab;
+
     public GrayCharacterController pc
     {
         get => _pc;

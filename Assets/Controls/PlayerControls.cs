@@ -411,6 +411,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""DropItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa0ac458-6077-44e1-921b-db6075455bb2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -691,6 +699,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""e480a123-b567-4cbe-b436-63a1954084f7"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""9b793f18-b88a-4203-82f8-a6c2ab0a5d1b"",
                     ""path"": ""*/{Cancel}"",
                     ""interactions"": """",
@@ -853,6 +872,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Menu Exit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d44f5bc2-5414-4943-ab6e-21c56e4b708f"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DropItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""767a60ec-2d61-48c9-ba8f-3e49172b2a5d"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DropItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -881,6 +922,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_MenuExit = m_UI.FindAction("Menu Exit", throwIfNotFound: true);
+        m_UI_DropItem = m_UI.FindAction("DropItem", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1022,6 +1064,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
     private readonly InputAction m_UI_MenuExit;
+    private readonly InputAction m_UI_DropItem;
     public struct UIActions
     {
         private @PlayerControls m_Wrapper;
@@ -1037,6 +1080,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
         public InputAction @MenuExit => m_Wrapper.m_UI_MenuExit;
+        public InputAction @DropItem => m_Wrapper.m_UI_DropItem;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1079,6 +1123,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @MenuExit.started -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
                 @MenuExit.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
                 @MenuExit.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
+                @DropItem.started -= m_Wrapper.m_UIActionsCallbackInterface.OnDropItem;
+                @DropItem.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnDropItem;
+                @DropItem.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnDropItem;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -1116,6 +1163,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @MenuExit.started += instance.OnMenuExit;
                 @MenuExit.performed += instance.OnMenuExit;
                 @MenuExit.canceled += instance.OnMenuExit;
+                @DropItem.started += instance.OnDropItem;
+                @DropItem.performed += instance.OnDropItem;
+                @DropItem.canceled += instance.OnDropItem;
             }
         }
     }
@@ -1143,5 +1193,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
         void OnMenuExit(InputAction.CallbackContext context);
+        void OnDropItem(InputAction.CallbackContext context);
     }
 }

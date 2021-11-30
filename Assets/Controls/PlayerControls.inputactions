@@ -398,6 +398,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "DropItem",
+                    "type": "Button",
+                    "id": "fa0ac458-6077-44e1-921b-db6075455bb2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -678,6 +686,17 @@
                 },
                 {
                     "name": "",
+                    "id": "e480a123-b567-4cbe-b436-63a1954084f7",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Submit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "9b793f18-b88a-4203-82f8-a6c2ab0a5d1b",
                     "path": "*/{Cancel}",
                     "interactions": "",
@@ -838,6 +857,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Menu Exit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d44f5bc2-5414-4943-ab6e-21c56e4b708f",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DropItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "767a60ec-2d61-48c9-ba8f-3e49172b2a5d",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DropItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

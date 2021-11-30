@@ -52,9 +52,31 @@ public class InventoryMenu : MonoBehaviour
             player.OnInventoryMenuExit();
         }
     }
-
+    public void OnSubmit(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            setupSwap(EventSystem.current.currentSelectedGameObject.GetComponent<InventorySlot>());
+        }
+    }
+    public void OnDropItem(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            dropItem(EventSystem.current.currentSelectedGameObject.GetComponent<InventorySlot>());
+        }
+    }    
 
     #endregion
+
+    public void dropItem(InventorySlot selected)
+    {
+        if (selected.isEmpty || selected == weaponSlot) return;
+        var newLootItem = Instantiate(Prefabs.Get.lootitem);
+        newLootItem.GetComponent<LootItem>().item = selected.popItem();
+        newLootItem.transform.parent = null;
+        newLootItem.transform.position = player.transform.position;
+    }
 
     public void setupSwap(InventorySlot selected)
     {
@@ -126,6 +148,8 @@ public class InventoryMenu : MonoBehaviour
         input = GetComponent<PlayerInput>();
         Player.hookInputAction(controls.UI.MenuExit, OnMenuExit);
         Player.hookInputAction(controls.UI.Cancel, OnMenuExit);
+        Player.hookInputAction(controls.UI.DropItem, OnDropItem);
+        Player.hookInputAction(controls.UI.Submit, OnSubmit);
 
         player = FindObjectOfType<Player>();
         weaponSlot = transform.Find("WeaponSlot").GetComponent<InventorySlot>();

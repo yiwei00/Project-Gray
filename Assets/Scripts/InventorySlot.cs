@@ -1,15 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class InventorySlot : MonoBehaviour
 {
     public Color highlightFrameColor;
+
     Color defaultFrameColor;
     InventoryItem _item;
     Image icon;
     Image frame;
     Image background;
-    Button button;
     InventoryMenu invMenu;
 
     public InventoryMenu inventory
@@ -38,8 +39,6 @@ public class InventorySlot : MonoBehaviour
     private void Awake()
     {
         item = InventoryItem.empty;
-        button = GetComponent<Button>();
-        button.onClick.AddListener(() => invMenu.setupSwap(this));
         icon = transform.Find("Icon").GetComponent<Image>();
         frame = transform.Find("Frame").GetComponent<Image>();
         background = GetComponent<Image>();
