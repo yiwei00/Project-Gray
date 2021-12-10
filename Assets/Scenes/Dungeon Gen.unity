@@ -327,6 +327,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
+      propertyPath: room_templates.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
+      propertyPath: room_templates.Array.data[2]
+      value: 
+      objectReference: {fileID: 1128548662736828114, guid: ed7a2565a9ca44ddc89456cc87de0000, type: 3}
+    - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
+      propertyPath: room_templates.Array.data[3]
+      value: 
+      objectReference: {fileID: 1128548662736828114, guid: a016e8815cc1c4b4d88b72574572f850, type: 3}
+    - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
+      propertyPath: room_templates.Array.data[4]
+      value: 
+      objectReference: {fileID: 1128548662736828114, guid: e7989508519214a0ba733addb38a8fe0, type: 3}
+    - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
+      propertyPath: room_templates.Array.data[5]
+      value: 
+      objectReference: {fileID: 1128548662736828114, guid: 485ac1a6551844c0ba9aaac8be995185, type: 3}
     - target: {fileID: 7369729678778910718, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: m_Name
       value: Generator
