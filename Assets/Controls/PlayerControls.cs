@@ -73,6 +73,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Pause Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""b948298c-0752-4d2b-8718-8ef4b55a708b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -317,6 +325,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Pickup"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""450bfc7b-f865-4c5f-a65e-cddc3d3733dd"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab6cfb81-cac6-4c9c-a60a-b7ea08490423"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -405,7 +435,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Menu Exit"",
+                    ""name"": ""InvExit"",
                     ""type"": ""Button"",
                     ""id"": ""0c85d57a-ab76-4681-92e6-c74b6145fedb"",
                     ""expectedControlType"": ""Button"",
@@ -416,6 +446,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": ""DropItem"",
                     ""type"": ""Button"",
                     ""id"": ""fa0ac458-6077-44e1-921b-db6075455bb2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""MenuExit"",
+                    ""type"": ""Button"",
+                    ""id"": ""7f60775b-a4f6-48a2-abad-c00e643bb987"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press""
@@ -858,7 +896,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Menu Exit"",
+                    ""action"": ""InvExit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -869,7 +907,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Menu Exit"",
+                    ""action"": ""InvExit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -894,6 +932,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""DropItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aee5653e-f601-48a4-8fd9-1f19e0b901fa"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MenuExit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1f07acb8-29e6-4fa7-afb9-5156c0cdfe9f"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MenuExit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -909,6 +969,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_gameplay_Attack = m_gameplay.FindAction("Attack", throwIfNotFound: true);
         m_gameplay_InventoryMenu = m_gameplay.FindAction("Inventory Menu", throwIfNotFound: true);
         m_gameplay_Pickup = m_gameplay.FindAction("Pickup", throwIfNotFound: true);
+        m_gameplay_PauseMenu = m_gameplay.FindAction("Pause Menu", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -921,8 +982,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
-        m_UI_MenuExit = m_UI.FindAction("Menu Exit", throwIfNotFound: true);
+        m_UI_InvExit = m_UI.FindAction("InvExit", throwIfNotFound: true);
         m_UI_DropItem = m_UI.FindAction("DropItem", throwIfNotFound: true);
+        m_UI_MenuExit = m_UI.FindAction("MenuExit", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -979,6 +1041,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_gameplay_Attack;
     private readonly InputAction m_gameplay_InventoryMenu;
     private readonly InputAction m_gameplay_Pickup;
+    private readonly InputAction m_gameplay_PauseMenu;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -990,6 +1053,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Attack => m_Wrapper.m_gameplay_Attack;
         public InputAction @InventoryMenu => m_Wrapper.m_gameplay_InventoryMenu;
         public InputAction @Pickup => m_Wrapper.m_gameplay_Pickup;
+        public InputAction @PauseMenu => m_Wrapper.m_gameplay_PauseMenu;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1020,6 +1084,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Pickup.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPickup;
                 @Pickup.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPickup;
                 @Pickup.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPickup;
+                @PauseMenu.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPauseMenu;
+                @PauseMenu.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPauseMenu;
+                @PauseMenu.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPauseMenu;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -1045,6 +1112,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Pickup.started += instance.OnPickup;
                 @Pickup.performed += instance.OnPickup;
                 @Pickup.canceled += instance.OnPickup;
+                @PauseMenu.started += instance.OnPauseMenu;
+                @PauseMenu.performed += instance.OnPauseMenu;
+                @PauseMenu.canceled += instance.OnPauseMenu;
             }
         }
     }
@@ -1063,8 +1133,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_UI_RightClick;
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
-    private readonly InputAction m_UI_MenuExit;
+    private readonly InputAction m_UI_InvExit;
     private readonly InputAction m_UI_DropItem;
+    private readonly InputAction m_UI_MenuExit;
     public struct UIActions
     {
         private @PlayerControls m_Wrapper;
@@ -1079,8 +1150,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
-        public InputAction @MenuExit => m_Wrapper.m_UI_MenuExit;
+        public InputAction @InvExit => m_Wrapper.m_UI_InvExit;
         public InputAction @DropItem => m_Wrapper.m_UI_DropItem;
+        public InputAction @MenuExit => m_Wrapper.m_UI_MenuExit;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1120,12 +1192,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @TrackedDeviceOrientation.started -= m_Wrapper.m_UIActionsCallbackInterface.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnTrackedDeviceOrientation;
-                @MenuExit.started -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
-                @MenuExit.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
-                @MenuExit.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
+                @InvExit.started -= m_Wrapper.m_UIActionsCallbackInterface.OnInvExit;
+                @InvExit.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnInvExit;
+                @InvExit.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnInvExit;
                 @DropItem.started -= m_Wrapper.m_UIActionsCallbackInterface.OnDropItem;
                 @DropItem.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnDropItem;
                 @DropItem.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnDropItem;
+                @MenuExit.started -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
+                @MenuExit.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
+                @MenuExit.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnMenuExit;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -1160,12 +1235,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @TrackedDeviceOrientation.started += instance.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.performed += instance.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.canceled += instance.OnTrackedDeviceOrientation;
-                @MenuExit.started += instance.OnMenuExit;
-                @MenuExit.performed += instance.OnMenuExit;
-                @MenuExit.canceled += instance.OnMenuExit;
+                @InvExit.started += instance.OnInvExit;
+                @InvExit.performed += instance.OnInvExit;
+                @InvExit.canceled += instance.OnInvExit;
                 @DropItem.started += instance.OnDropItem;
                 @DropItem.performed += instance.OnDropItem;
                 @DropItem.canceled += instance.OnDropItem;
+                @MenuExit.started += instance.OnMenuExit;
+                @MenuExit.performed += instance.OnMenuExit;
+                @MenuExit.canceled += instance.OnMenuExit;
             }
         }
     }
@@ -1179,6 +1257,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnAttack(InputAction.CallbackContext context);
         void OnInventoryMenu(InputAction.CallbackContext context);
         void OnPickup(InputAction.CallbackContext context);
+        void OnPauseMenu(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
@@ -1192,7 +1271,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
-        void OnMenuExit(InputAction.CallbackContext context);
+        void OnInvExit(InputAction.CallbackContext context);
         void OnDropItem(InputAction.CallbackContext context);
+        void OnMenuExit(InputAction.CallbackContext context);
     }
 }

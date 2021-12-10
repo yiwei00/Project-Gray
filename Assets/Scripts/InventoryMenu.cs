@@ -13,7 +13,6 @@ public class InventoryMenu : MonoBehaviour
     InventorySlot weaponSlot;
     InventorySlot toBeSwapped;
     PlayerControls controls; // for getting control inputs
-    PlayerInput input;
     private Player _player;
     public Player player
     {
@@ -43,7 +42,7 @@ public class InventoryMenu : MonoBehaviour
     {
         controls.UI.Disable();
     }
-    public void OnMenuExit(InputAction.CallbackContext context)
+    public void OnInvExit(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Started)
         {
@@ -145,22 +144,18 @@ public class InventoryMenu : MonoBehaviour
     {
         player = Player.Instance;
 
-        input = GetComponent<PlayerInput>();
-        Player.hookInputAction(controls.UI.MenuExit, OnMenuExit);
-        Player.hookInputAction(controls.UI.Cancel, OnMenuExit);
+        Player.hookInputAction(controls.UI.InvExit, OnInvExit);
+        Player.hookInputAction(controls.UI.Cancel, OnInvExit);
         Player.hookInputAction(controls.UI.DropItem, OnDropItem);
         Player.hookInputAction(controls.UI.Submit, OnSubmit);
 
-        player = FindObjectOfType<Player>();
         weaponSlot = transform.Find("WeaponSlot").GetComponent<InventorySlot>();
         weaponSlot.inventory = this;
         weaponSlot.addItem(new WeaponInventoryItem(defaultWeapon));
 
         if (inventory == null) createInventory();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+        Debug.Log("loaded on start");
+        gameObject.SetActive(false);
     }
 }

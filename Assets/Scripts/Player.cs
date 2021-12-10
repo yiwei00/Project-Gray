@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     PlayerInput input;
     GrayCharacterController _pc; // player character controller
     public InventoryMenu invMenu;
+    public PauseMenu pauseMenu;
 
     // state keeping to ensure smooth controls
     float INPUT_DELAY = .3f;
@@ -114,11 +115,26 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void OnPauseMenu(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            input.SwitchCurrentActionMap("UI");
+            Time.timeScale = 0;
+            pauseMenu.pauseText = "Paused";
+            pauseMenu.gameObject.SetActive(true);
+        }
+    }
+
     public void OnInventoryMenuExit()
     {
+        if (pc.dead && pauseMenu.gameObject.activeInHierarchy) return;
         input.SwitchCurrentActionMap("gameplay");
         Time.timeScale = 1;
-        invMenu.gameObject.SetActive(false);
+        if (invMenu.gameObject.activeInHierarchy)
+            invMenu.gameObject.SetActive(false);
+        if (pauseMenu.gameObject.activeInHierarchy)
+            pauseMenu.gameObject.SetActive(false);
     }
 
     public void OnPickup(InputAction.CallbackContext context)
@@ -197,6 +213,7 @@ public class Player : MonoBehaviour
         hookInputAction(controls.gameplay.Attack, OnAttack);
         hookInputAction(controls.gameplay.InventoryMenu, OnInventoryMenu);
         hookInputAction(controls.gameplay.Pickup, OnPickup);
+        hookInputAction(controls.gameplay.PauseMenu, OnPauseMenu);
 
 
         lastMove = -INPUT_DELAY - 1;
@@ -212,7 +229,10 @@ public class Player : MonoBehaviour
     {
         if (pc.dead)
         {
-            Debug.Log("player poofed");
+            input.SwitchCurrentActionMap("UI");
+            Time.timeScale = 0;
+            pauseMenu.pauseText = "Game Over";
+            pauseMenu.gameObject.SetActive(true);
             return;
         }
         // auto untoggle sprint
