@@ -210,6 +210,11 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        if (pc.dead)
+        {
+            Debug.Log("player poofed");
+            return;
+        }
         // auto untoggle sprint
         if (isSprintToggled && (Time.time - lastMove) > .05f && !isSprintHeld)
         {

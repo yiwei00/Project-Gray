@@ -73,4 +73,9 @@ public class AI_2hsword : MonoBehaviour
             }
         }
     }
+
+    private void OnDestroy()
+    {
+        Debug.Log("Enemy Poofed");
+    }
 }

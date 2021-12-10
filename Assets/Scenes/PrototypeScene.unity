@@ -733,7 +733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef176cd70c4b0114694e495477a74753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 0
+  maxHP: 100
   resist:
     pure_resistance: 0
     physical_resistance: 0

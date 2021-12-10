@@ -27,7 +27,18 @@ public class GrayCharacterController : MonoBehaviour
     bool attackTriggered;
     bool attackStarted;
     bool newWeaponFlag;
+    bool _isDead;
     GameObject newWeaponObj;
+
+    public bool dead
+    {
+        get => _isDead;
+    }
+
+    public bool alive
+    {
+        get => !_isDead;
+    }
 
     // get attack state for ai
     public int attackState
@@ -48,6 +59,7 @@ public class GrayCharacterController : MonoBehaviour
     int move_state_hash;
     int roll_trigger_hash;
     int attack1_trigger_hash;
+    int death_trigger_hash;
 
     // hitpoints
     Hitpoint hitpoint;
@@ -124,6 +136,7 @@ public class GrayCharacterController : MonoBehaviour
             move_state_hash = Animator.StringToHash("move_state");
             roll_trigger_hash = Animator.StringToHash("roll_trigger");
             attack1_trigger_hash = Animator.StringToHash("attack1_trigger");
+            death_trigger_hash = Animator.StringToHash("death_trigger");
         }
         // got hands?
         if (!hand) hand = transform;
@@ -136,6 +149,17 @@ public class GrayCharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //handle health and death at start
+        handleHitpoint();
+        if (dead)
+        {
+            if (hasAnimator && animator.GetCurrentAnimatorStateInfo(0).IsName("Sink"))
+            {
+                die();
+            }
+            return;
+        }
+
         if (hasAnimator && !equippedWeapon) // equip weapon if has animation
         {
             equippedWeapon = GetComponentInChildren<Weapon>();
@@ -165,6 +189,22 @@ public class GrayCharacterController : MonoBehaviour
     }
 
     // private methods:
+    private void handleHitpoint()
+    {
+        if (alive && (hitpoint.curHP <= 0))
+        {
+            _isDead = true;
+            if (hasAnimator)
+            {
+                animator.SetTrigger(death_trigger_hash);
+            }
+            else
+            {
+                // poof :(
+                die();
+            }
+        }
+    }
     private void handleTransform()
     {
         Vector3 displacement = Vector3.zero;
@@ -319,6 +359,14 @@ public class GrayCharacterController : MonoBehaviour
         rSpeedFromEffects = Mathf.Max(rSpeedFromEffects, -rotationSpeed);
     }
 
+    private void die()
+    {
+        // TODO: lootdrop here.
+
+        if (gameObject != Player.Instance.gameObject)
+            Destroy(this.gameObject);
+    }
+
     public void handleWeaponEquip()
     {
         if (newWeaponFlag && canMove())
@@ -377,6 +425,7 @@ public class GrayCharacterController : MonoBehaviour
         // sort desc
         activeEffects.Sort((a, b) => b.CompareTo(a));
     }
+
 
     public bool isRolling()
     {
