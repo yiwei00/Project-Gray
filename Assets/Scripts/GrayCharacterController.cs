@@ -127,7 +127,7 @@ public class GrayCharacterController : MonoBehaviour
     }
     #endregion
 
-    void Start()
+    void Awake()
     {
         // default values
         sprintToggled = false;

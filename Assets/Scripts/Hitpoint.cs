@@ -158,7 +158,7 @@ public class Hitpoint : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _resistance = new float[3] { 0, 0, 0 };
         if (level > 0)

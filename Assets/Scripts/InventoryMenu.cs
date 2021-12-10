@@ -156,19 +156,23 @@ public class InventoryMenu : MonoBehaviour
             inventory.Add(invSlotComp);
         }
     }
+    private void Awake()
+    {
+
+        weaponSlot = transform.Find("WeaponSlot").GetComponent<InventorySlot>();
+        weaponSlot.inventory = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
-        player = Player.Instance;
-        world = WorldManager.Instance;
-
         Player.hookInputAction(controls.UI.InvExit, OnInvExit);
         Player.hookInputAction(controls.UI.Cancel, OnInvExit);
         Player.hookInputAction(controls.UI.DropItem, OnDropItem);
         Player.hookInputAction(controls.UI.Submit, OnSubmit);
 
-        weaponSlot = transform.Find("WeaponSlot").GetComponent<InventorySlot>();
-        weaponSlot.inventory = this;
+        player = Player.Instance;
+        world = WorldManager.Instance;
+
         weaponSlot.addItem(new WeaponItem(Instantiate(world.weaponDict[defaultWeapon])));
 
         if (inventory == null) createInventory();

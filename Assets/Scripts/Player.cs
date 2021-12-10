@@ -14,8 +14,8 @@ public class Player : MonoBehaviour
 
     // camera
     public Camera cam;
-    float camOffset = 5f;
-    float camHeight = 10f;
+    float camOffset = 4f;
+    float camHeight = 7f;
     float camAngle = 60f;
 
     // other components
@@ -268,16 +268,20 @@ public class Player : MonoBehaviour
         else
         {
             _instance = this;
+
+            // get components
+            input = GetComponent<PlayerInput>();
+            pc = GetComponent<GrayCharacterController>();
+            _hp = GetComponent<Hitpoint>();
+
+            lastMove = -INPUT_DELAY - 1;
+            lastAttack = -INPUT_DELAY - 1;
+            lastRoll = -INPUT_DELAY - 1;
         }
     }
-
+    
     void Start()
     {
-        // get components
-        input = GetComponent<PlayerInput>();
-        pc = GetComponent<GrayCharacterController>();
-        _hp = GetComponent<Hitpoint>();
-
         hookInputAction(controls.gameplay.Movement, OnMovement);
         hookInputAction(controls.gameplay.SprintToggle, OnSprintToggle);
         hookInputAction(controls.gameplay.SprintHold, OnSprintHold);
@@ -286,11 +290,6 @@ public class Player : MonoBehaviour
         hookInputAction(controls.gameplay.InventoryMenu, OnInventoryMenu);
         hookInputAction(controls.gameplay.Pickup, OnPickup);
         hookInputAction(controls.gameplay.PauseMenu, OnPauseMenu);
-
-
-        lastMove = -INPUT_DELAY - 1;
-        lastAttack= -INPUT_DELAY - 1;
-        lastRoll= -INPUT_DELAY - 1;
 
         invMenu.gameObject.SetActive(false);
         invMenu.player = this;
