@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class GrayCharacterController : MonoBehaviour
 {
@@ -11,6 +10,7 @@ public class GrayCharacterController : MonoBehaviour
     public float rotationSpeed = 9.4f;
     public float baseSpeed = 5.0f;
     public Transform hand = null;
+    public int defaultWeapon;
 
     float sprintMult = 2.0f;
     float curSpeed = 0.0f;
@@ -18,6 +18,7 @@ public class GrayCharacterController : MonoBehaviour
     // private members
     bool isSprinting;
     Vector3 displacement; // set by player controls, normalized by default
+    Vector3 rotDir; // like displacement but for rotation only
 
     // state machine
     bool sprintToggled;
@@ -25,6 +26,31 @@ public class GrayCharacterController : MonoBehaviour
     bool rollStarted;
     bool attackTriggered;
     bool attackStarted;
+    bool newWeaponFlag;
+    bool _isDead;
+    GameObject newWeaponObj;
+
+    public bool dead
+    {
+        get => _isDead;
+    }
+
+    public bool alive
+    {
+        get => !_isDead;
+    }
+
+    // get attack state for ai
+    public int attackState
+    {
+        get
+        {
+            if (attackTriggered) return 1;
+            if (attackStarted) return 2;
+            if (inAttackAnim()) return 3;
+            return 0;
+        }
+    }
 
     // animation related
     bool hasAnimator;
@@ -33,23 +59,48 @@ public class GrayCharacterController : MonoBehaviour
     int move_state_hash;
     int roll_trigger_hash;
     int attack1_trigger_hash;
+    int death_trigger_hash;
+    int reset_trigger_hash;
+
+    public CharacterController cc
+    {
+        get => characterController;
+    }
 
     // hitpoints
     Hitpoint hitpoint;
 
     // effects
+    [SerializeField]
     List<Effect> activeEffects; // TODO: implement custom priority queue to speed this up
     float mSpeedFromEffects;
     float rSpeedFromEffects;
 
-    // weapon
+    // weapon n equpiment
     Weapon equippedWeapon;
+
+    public Weapon weapon
+    {
+        get => equippedWeapon;
+    }
 
     #region Endpoints
 
     public void Move(Vector3 displacement)
     {
         this.displacement = displacement;
+    }
+
+    public void TurnTo(Vector3 rotDir)
+    {
+        this.rotDir = rotDir;
+    }
+
+    // zero out movement
+    public void ZeroMovement()
+    {
+        displacement = Vector3.zero;
+        rotDir = Vector3.zero;
     }
 
     public bool sprint
@@ -91,6 +142,8 @@ public class GrayCharacterController : MonoBehaviour
             move_state_hash = Animator.StringToHash("move_state");
             roll_trigger_hash = Animator.StringToHash("roll_trigger");
             attack1_trigger_hash = Animator.StringToHash("attack1_trigger");
+            death_trigger_hash = Animator.StringToHash("death_trigger");
+            reset_trigger_hash = Animator.StringToHash("reset_trigger");
         }
         // got hands?
         if (!hand) hand = transform;
@@ -103,11 +156,27 @@ public class GrayCharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!equippedWeapon)
+        //handle health and death at start
+        handleHitpoint();
+        if (dead)
+        {
+            if (hasAnimator && animator.GetCurrentAnimatorStateInfo(0).IsName("Sink"))
+            {
+                die();
+            }
+            return;
+        }
+
+        if (hasAnimator && !equippedWeapon) // equip weapon if has animation
         {
             equippedWeapon = GetComponentInChildren<Weapon>();
             if (!equippedWeapon) equippedWeapon = hand.gameObject.GetComponentInChildren<Weapon>();
+            if (!equippedWeapon && hasAnimator)
+            {
+                equipNewWeapon(WorldManager.Instance.weaponDict[defaultWeapon]);
+            }
         }
+        handleWeaponEquip();
         handleEffects();
         handleTransform();
         handleAttack();
@@ -116,22 +185,50 @@ public class GrayCharacterController : MonoBehaviour
         Debug.Log(string.Format("{0}: HP: {1}, Active Effect Count: {2}",gameObject.name,  hitpoint.curHP, activeEffects.Count));
     }
 
+    public bool equipNewWeapon(GameObject newWeapon)
+    {
+        newWeapon = Instantiate(newWeapon);
+        newWeapon.SetActive(false);
+        var weapon = newWeapon.GetComponent<Weapon>();
+        if (!weapon) return false;
+
+        newWeaponFlag = true;
+        newWeaponObj = newWeapon;
+        return true;
+    }
+
     // private methods:
+    private void handleHitpoint()
+    {
+        if (alive && (hitpoint.curHP <= 0))
+        {
+            _isDead = true;
+            if (hasAnimator)
+            {
+                animator.SetTrigger(death_trigger_hash);
+            }
+            else
+            {
+                // poof :(
+                die();
+            }
+        }
+    }
     private void handleTransform()
     {
         Vector3 displacement = Vector3.zero;
         Quaternion rot = transform.rotation;
         Quaternion moveRot = transform.rotation;
-        if (mSpeedFromEffects > 0 || rSpeedFromEffects > 0)
-        {
-            int i = 0;
-        }
         float mspeed = mSpeedFromEffects + this.baseSpeed;
         float rspeed = rSpeedFromEffects + this.rotationSpeed;
         // input is given
-        if ((this.displacement != Vector3.zero))
+        if (this.displacement != Vector3.zero)
         {
             moveRot = Quaternion.LookRotation(this.displacement, Vector3.up);
+        }
+        else if (rotDir != Vector3.zero)
+        {
+            moveRot = Quaternion.LookRotation(rotDir, Vector3.up);
         }
         // allow movement
         if (canMove())
@@ -225,8 +322,8 @@ public class GrayCharacterController : MonoBehaviour
     {
         float mSpeedStaticDiff = 0.0f;
         float rSpeedStaticDiff = 0.0f;
-        float mSpeedPercentdiff = 1.0f;
-        float rSpeedPercentdiff = 1.0f;
+        float mSpeedPercentDiff = 1.0f;
+        float rSpeedPercentDiff = 1.0f;
         List<Effect> to_remove = new List<Effect>();
         foreach (Effect effect in activeEffects)
         {
@@ -246,45 +343,97 @@ public class GrayCharacterController : MonoBehaviour
                 {
                     case EffectType.Move_Slowdown:
                         mSpeedStaticDiff -= effect.staticStrength;
-                        mSpeedPercentdiff *= Mathf.Max(1 - effect.percentStrength, 0);
+                        mSpeedPercentDiff *= Mathf.Max(1 - effect.percentStrength, 0);
                         break;
                     case EffectType.Move_Speedup:
                         mSpeedStaticDiff += effect.staticStrength;
-                        mSpeedPercentdiff *= effect.percentStrength;
+                        mSpeedPercentDiff *= effect.percentStrength;
                         break;
                     case EffectType.Turn_Slowdown:
                         rSpeedStaticDiff -= effect.staticStrength;
-                        rSpeedPercentdiff *= Mathf.Max(1 - effect.percentStrength, 0);
+                        rSpeedPercentDiff *= Mathf.Max(1 - effect.percentStrength, 0);
                         break;
                     case EffectType.Turn_Speedup:
                         rSpeedStaticDiff += effect.staticStrength;
-                        rSpeedPercentdiff *= effect.percentStrength;
+                        rSpeedPercentDiff *= effect.percentStrength;
                         break;
                 }
             }
         }
         while ((activeEffects.Count > 0) && activeEffects[activeEffects.Count - 1].duration <= 0)
             activeEffects.RemoveAt(activeEffects.Count - 1);
-        mSpeedFromEffects = mSpeedStaticDiff + (mSpeedPercentdiff - 1) * baseSpeed;
-        rSpeedFromEffects = rSpeedStaticDiff + (rSpeedPercentdiff - 1) * rotationSpeed;
+        mSpeedFromEffects = mSpeedStaticDiff + (mSpeedPercentDiff - 1) * baseSpeed;
+        rSpeedFromEffects = rSpeedStaticDiff + (rSpeedPercentDiff - 1) * rotationSpeed;
         mSpeedFromEffects = Mathf.Max(mSpeedFromEffects, -baseSpeed);
         rSpeedFromEffects = Mathf.Max(rSpeedFromEffects, -rotationSpeed);
     }
 
-    public void applyEffect(Effect e)
+    private void die()
     {
+        // TODO: lootdrop here.
+
+        if (gameObject != Player.Instance.gameObject)
+            Destroy(this.gameObject);
+    }
+
+    public void handleWeaponEquip()
+    {
+        if (newWeaponFlag && canMove())
+        {
+            // remove current weapon
+            if (equippedWeapon)
+            {
+                Destroy(equippedWeapon.gameObject);
+            }
+
+            equippedWeapon = newWeaponObj.GetComponent<Weapon>();
+            newWeaponObj.transform.parent = transform;
+            equippedWeapon.enabled = true;
+            newWeaponObj.SetActive(true);
+
+            newWeaponFlag = false;
+            newWeaponObj = null;
+        }
+
+    }
+
+    private void applySingleEffect(Effect e)
+    {
+        switch (e.effectType)
+        {
+            case EffectType.Heal:
+            case EffectType.Pure_Damage:
+            case EffectType.Physical_Damage:
+            case EffectType.Magical_Damage:
+                e.duration = 0;
+                break;
+        }
+        foreach (var activeEffect in activeEffects)
+        {
+            if (activeEffect.name == e.name && activeEffect.effectType == e.effectType)
+            {
+                activeEffect.duration = Mathf.Max(activeEffect.duration, e.duration);
+                activeEffect.staticStrength = Mathf.Max(activeEffect.staticStrength, e.staticStrength);
+                activeEffect.percentStrength = Mathf.Max(activeEffect.percentStrength, e.percentStrength);
+                return;
+            }
+        }
         activeEffects.Add(e.clone());
+    }
+
+    public void applyEffect(List<Effect> effects, float powerAmp = 1)
+    {
+        var toApply = effects.ConvertAll<Effect>(e => e.clone());
+        foreach (var e in toApply)
+        {
+            e.staticStrength *= powerAmp;
+            e.percentStrength *= powerAmp;
+            applySingleEffect(e);
+        }
         // sort desc
         activeEffects.Sort((a, b) => b.CompareTo(a));
     }
 
-    public void applyEffect(List<Effect> effects)
-    {
-        var toApply = effects.ConvertAll<Effect>(e => e.clone());
-        activeEffects.AddRange(toApply);
-        // sort desc
-        activeEffects.Sort((a, b) => b.CompareTo(a));
-    }
 
     public bool isRolling()
     {
@@ -308,7 +457,7 @@ public class GrayCharacterController : MonoBehaviour
             || animator.GetCurrentAnimatorStateInfo(0).IsName("SprintAttack")
         );
     }
-    private bool isAttacking()
+    public bool isAttacking()
     {
         if (inAttackAnim())
         {
@@ -328,5 +477,17 @@ public class GrayCharacterController : MonoBehaviour
     private bool canAttack()
     {
         return !isSprinting && !isRolling();
+    }
+
+    public void resetCharacter()
+    {
+        hitpoint.heal(hitpoint.maxHP);
+        _isDead = false;
+        activeEffects = new List<Effect>();
+        sprintToggled = false;
+        displacement = Vector3.zero;
+        rotDir = Vector3.zero;
+        if (hasAnimator)
+            animator.SetTrigger(reset_trigger_hash);
     }
 }

@@ -8,8 +8,13 @@ public enum DmgType: int
 }
 public class Hitpoint : MonoBehaviour
 {
+    public int level = -1;
     public int maxHP;
     private float _curHP;
+    public int curHP
+    {
+        get => Mathf.RoundToInt(_curHP);
+    }
 
     private float[] _resistance;
     public Resistances resist;
@@ -52,24 +57,27 @@ public class Hitpoint : MonoBehaviour
         }
     }
 
-    public float curHP
-    {
-        get => _curHP;
-    }
-
     public void heal(float amount)
     {
-        _curHP = Mathf.Clamp(_curHP + amount, 0, maxHP);
+        _curHP = Mathf.Clamp(_curHP + amount, 0f, maxHP);
     }
 
-    public void damage(float[] dmg)
+    public float damage(float[] dmg)
     {
         float net_dmg = 0;
         foreach(int dmgType in (DmgType[])System.Enum.GetValues(typeof(DmgType)))
         {
-            net_dmg += dmg[dmgType] * Mathf.Max(0, 1 - _resistance[dmgType]);
+            if (dmgType == (int) DmgType.Pure)
+            {
+                net_dmg += dmg[dmgType] * Mathf.Max(0, 1 - _resistance[dmgType]);
+            }
+            else // pure resists everything
+            {
+                net_dmg += dmg[dmgType] * Mathf.Max(0, 1 - _resistance[dmgType] - _resistance[(int) DmgType.Pure]);
+            }
         }
         _curHP = Mathf.Clamp(_curHP - net_dmg, 0, maxHP);
+        return net_dmg;
     }
 
     public static bool isHitpointEffect(Effect effect)
@@ -138,13 +146,32 @@ public class Hitpoint : MonoBehaviour
         magical_resistance = resist.magical_resistance;
     }
 
+    public void adjustToLevel(int newLevel)
+    {
+        level = newLevel;
+        maxHP = Mathf.FloorToInt(25 * Mathf.Log(level + 1) * Mathf.Pow(1 + level, 1 / 16f));
+        if (level < 50) physical_resistance = (level / 100f) - .3f;
+        else physical_resistance = .2f;
+        if (level < 30) magical_resistance = -.3f;
+        else if (level < 80) magical_resistance = (level / 100f) - .8f;
+        else magical_resistance = .2f;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         _resistance = new float[3] { 0, 0, 0 };
-        pure_resistance = resist.pure_resistance;
-        physical_resistance = resist.physical_resistance;
-        magical_resistance = resist.magical_resistance;
+        if (level > 0)
+        {
+            adjustToLevel(level);
+        }
+        else
+        {
+
+            pure_resistance = resist.pure_resistance;
+            physical_resistance = resist.physical_resistance;
+            magical_resistance = resist.magical_resistance;
+        }
         _curHP = maxHP;
     }
 }

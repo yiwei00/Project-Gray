@@ -45,4 +45,40 @@ public class Effect: System.IComparable<Effect>
         ret.percentStrength = this.percentStrength;
         return ret;
     }
+
+    public string toJson()
+    {
+        return JsonUtility.ToJson(this);
+    }
+
+    public static Effect fromJson(string jsonStr)
+    {
+        return JsonUtility.FromJson<Effect>(jsonStr);
+    }
+
+    public static bool isDmgType(EffectType type)
+    {
+        switch (type)
+        {
+            case EffectType.Pure_Damage:
+            case EffectType.Physical_Damage:
+            case EffectType.Magical_Damage:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static bool isDotType(EffectType type)
+    {
+        switch (type)
+        {
+            case EffectType.Pure_DoT:
+            case EffectType.Physical_DoT:
+            case EffectType.Magical_DoT:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
