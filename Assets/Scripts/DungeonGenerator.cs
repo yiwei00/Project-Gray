@@ -23,18 +23,13 @@ public class DungeonGenerator : MonoBehaviour
      * */
 
     public GameObject[] room_templates;
+    public GameObject closed_wall;
     public GameObject initial_room;
     public List<GameObject> rooms;
 
     void Awake()
     {
         // create initial room, connection points will do the rest of the work.
-        initial_room = Instantiate(room_templates[0],transform.position,transform.rotation);
-        rooms.Add(initial_room);
-    }
-
-    void Update()
-    {    
-
+        rooms.Add(Instantiate(initial_room,transform.position,transform.rotation));
     }
 }
