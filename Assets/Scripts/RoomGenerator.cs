@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
 {
-    private GameObject[] room_templates;
-    //private GameObject[] hall_templates;
+    public int[] types_accepted;
     private GameObject root;
+    private List<GameObject> room_templates;
     private List<GameObject> rooms;
     private GameObject closed_wall;
     private GameObject temp_room;
@@ -17,15 +17,18 @@ public class RoomGenerator : MonoBehaviour
     private bool spawned;
     private float ttl;
 
-    void Start()
+    void Awake()
     {
         ttl = 4f;
         spawned = false;
         success = false;
+    }
+
+    void Start()
+    {
         root = GameObject.FindGameObjectWithTag("Root");
         room_templates = root.GetComponent<DungeonGenerator>().room_templates;
         rooms = root.GetComponent<DungeonGenerator>().rooms;
-        closed_wall = root.GetComponent<DungeonGenerator>().closed_wall;
         Destroy(gameObject,ttl);
         Invoke("generate",0.1f);
     }
@@ -34,8 +37,8 @@ public class RoomGenerator : MonoBehaviour
     {
         if(spawned == false)
         {
-            available = Enumerable.Range(0,room_templates.Length).ToList();
-            if(room_templates.Length == 0) { Debug.Log("no room templates found!"); }
+            available = Enumerable.Range(0,types_accepted.Length).ToList();
+            if(room_templates.Count == 0) { Debug.Log("no room templates found!"); }
             // try all random rooms 
             while(available.Count > 0)
             {
@@ -43,8 +46,8 @@ public class RoomGenerator : MonoBehaviour
                 attempt = available[index];
                 available.RemoveAt(index);
                 temp_room = (GameObject)Instantiate(room_templates[index],transform.position,transform.rotation);
-                if(test_collision(temp_room)) { Destroy(temp_room); continue; Debug.Log("intersected");}
-                else { success = true; break; Debug.Log("success");}
+                if(test_collision(temp_room)) { Destroy(temp_room); continue; }
+                else { success = true; break; }
             }
             // no room fits, put closed wall
             if(!success) { temp_room = (GameObject)Instantiate(closed_wall,transform.position,transform.rotation); }
