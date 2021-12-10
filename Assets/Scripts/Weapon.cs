@@ -11,6 +11,14 @@ public class Weapon : MonoBehaviour
     public string description;
     public LootRarity rarity;
 
+    private float _powerAmp;
+
+    public float powerAmp
+    {
+        get => (_powerAmp-1) * 100;
+        set => _powerAmp = (1 + value/100);
+    }
+
     // collidable weapons are like swords
     // non-collidable weapons are like wands
     public bool isCollidable;
@@ -45,7 +53,7 @@ public class Weapon : MonoBehaviour
         alreadyHit.Add(other);
         Debug.Log(string.Format("Hit {0}", other.gameObject.name));
         var character = other.GetComponent<GrayCharacterController>();
-        character.applyEffect(weaponEffects);
+        character.applyEffect(weaponEffects, _powerAmp);
     }
 
     // fires projectile for projectile weapons
@@ -76,5 +84,7 @@ public class Weapon : MonoBehaviour
         transform.parent = attachedCharacter.hand;
         transform.localPosition = attachPos;
         transform.localRotation = Quaternion.Euler(attachRot);
+
+        powerAmp = 0;
     }
 }

@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     {
         get => _instance;
     }
+
     // camera
     public Camera cam;
     float camOffset = 5f;

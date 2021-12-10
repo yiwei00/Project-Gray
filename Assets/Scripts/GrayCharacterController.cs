@@ -18,6 +18,7 @@ public class GrayCharacterController : MonoBehaviour
     // private members
     bool isSprinting;
     Vector3 displacement; // set by player controls, normalized by default
+    Vector3 rotDir; // like displacement but for rotation only
 
     // state machine
     bool sprintToggled;
@@ -27,6 +28,18 @@ public class GrayCharacterController : MonoBehaviour
     bool attackStarted;
     bool newWeaponFlag;
     GameObject newWeaponObj;
+
+    // get attack state for ai
+    public int attackState
+    {
+        get
+        {
+            if (attackTriggered) return 1;
+            if (attackStarted) return 2;
+            if (inAttackAnim()) return 3;
+            return 0;
+        }
+    }
 
     // animation related
     bool hasAnimator;
@@ -58,6 +71,18 @@ public class GrayCharacterController : MonoBehaviour
     public void Move(Vector3 displacement)
     {
         this.displacement = displacement;
+    }
+
+    public void TurnTo(Vector3 rotDir)
+    {
+        this.rotDir = rotDir;
+    }
+
+    // zero out movement
+    public void ZeroMovement()
+    {
+        displacement = Vector3.zero;
+        rotDir = Vector3.zero;
     }
 
     public bool sprint
@@ -148,9 +173,13 @@ public class GrayCharacterController : MonoBehaviour
         float mspeed = mSpeedFromEffects + this.baseSpeed;
         float rspeed = rSpeedFromEffects + this.rotationSpeed;
         // input is given
-        if ((this.displacement != Vector3.zero))
+        if (this.displacement != Vector3.zero)
         {
             moveRot = Quaternion.LookRotation(this.displacement, Vector3.up);
+        }
+        else if (rotDir != Vector3.zero)
+        {
+            moveRot = Quaternion.LookRotation(rotDir, Vector3.up);
         }
         // allow movement
         if (canMove())
@@ -336,11 +365,13 @@ public class GrayCharacterController : MonoBehaviour
         activeEffects.Add(e.clone());
     }
 
-    public void applyEffect(List<Effect> effects)
+    public void applyEffect(List<Effect> effects, float powerAmp = 1)
     {
         var toApply = effects.ConvertAll<Effect>(e => e.clone());
         foreach (var e in toApply)
         {
+            e.staticStrength *= powerAmp;
+            e.percentStrength *= powerAmp;
             applySingleEffect(e);
         }
         // sort desc
@@ -369,7 +400,7 @@ public class GrayCharacterController : MonoBehaviour
             || animator.GetCurrentAnimatorStateInfo(0).IsName("SprintAttack")
         );
     }
-    private bool isAttacking()
+    public bool isAttacking()
     {
         if (inAttackAnim())
         {
