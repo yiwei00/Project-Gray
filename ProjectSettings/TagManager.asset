@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Obstacle
   - EnemyNPC
+  - SpawnPoint
+  - Rooms
+  - Root
   layers:
   - Default
   - TransparentFX

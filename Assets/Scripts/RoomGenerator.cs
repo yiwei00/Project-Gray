@@ -29,6 +29,8 @@ public class RoomGenerator : MonoBehaviour
         root = GameObject.FindGameObjectWithTag("Root");
         room_templates = root.GetComponent<DungeonGenerator>().room_templates;
         rooms = root.GetComponent<DungeonGenerator>().rooms;
+        closed_wall = root.GetComponent<DungeonGenerator>().closed_wall;
+
         Destroy(gameObject,ttl);
         Invoke("generate",0.1f);
     }
@@ -37,7 +39,7 @@ public class RoomGenerator : MonoBehaviour
     {
         if(spawned == false)
         {
-            available = Enumerable.Range(0,types_accepted.Length).ToList();
+            available = Enumerable.Range(1,room_templates.Count).ToList();
             if(room_templates.Count == 0) { Debug.Log("no room templates found!"); }
             // try all random rooms 
             while(available.Count > 0)
@@ -46,6 +48,7 @@ public class RoomGenerator : MonoBehaviour
                 attempt = available[index];
                 available.RemoveAt(index);
                 temp_room = (GameObject)Instantiate(room_templates[index],transform.position,transform.rotation);
+                Debug.Log("pos: " + transform.position + "; rot: " + transform.eulerAngles);
                 if(test_collision(temp_room)) { Destroy(temp_room); continue; }
                 else { success = true; break; }
             }
@@ -62,7 +65,6 @@ public class RoomGenerator : MonoBehaviour
         {
             if(temp_room.GetComponent<Collider>().bounds.Intersects(other_room.GetComponent<Collider>().bounds))
             {
-                Debug.Log("collision detected");
                 return true;
             }
         }

@@ -27,22 +27,21 @@ public class DungeonGenerator : MonoBehaviour
      *
      * */
 
-    public GameObject[] floor_tiles;
-    public GameObject[] wall_tiles;
-    public GameObject[] door_tiles;
-    public GameObject[] connections;
+    //public GameObject[] floor_tiles;
+    //public GameObject[] wall_tiles;
+    //public GameObject[] door_tiles;
+    //public GameObject[] connections;
     public List<GameObject> room_templates;
+    public GameObject closed_wall;
     public List<GameObject> rooms;
-    public Vector3 template_offset;
+    //public Vector3 template_offset;
     // 5x5 tiles init, small 4-6x4-6, med 6-8x6-8, big 8-10x8-10
     // hall 1x2-4 small, 1-2x4-6 med, 2x6-8 big
     // public enum Type {init,room_s,room_m,room_b,hall_s,hall_m,hall_b,dead_end}; 
 
     void Awake()
     {
-        room_templates = new List<GameObject>();
         rooms = new List<GameObject>();
-        template_offset = new Vector3(0,0,0);
     }
 
     void Start()
@@ -62,11 +61,9 @@ public class DungeonGenerator : MonoBehaviour
         //summon boss at rooms[-1]
 
     }
-
-
  
     //below is code for random room generation. unfortunately ran out of time before being able to complete this.
-
+/*
     GameObject create_rand_room(int width, int length, int width_range, int length_range)
     {
         int w = width + Random.Range(0,width_range);
@@ -154,4 +151,5 @@ public class DungeonGenerator : MonoBehaviour
         
         return temp_room;
     }
+*/
 }
