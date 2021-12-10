@@ -39,7 +39,8 @@ public class Weapon : MonoBehaviour
         if (!isCollidable || !attachedCharacter.inAttackAnim()) return;
         if (other.gameObject == attachedTo) return;
         var targetChar = other.gameObject.GetComponent<GrayCharacterController>();
-        if (targetChar && targetChar.isRolling()) return;
+        if (!targetChar) return;
+        if (targetChar.isRolling()) return;
         if (alreadyHit.Find((x) => x == other)) return;
         alreadyHit.Add(other);
         Debug.Log(string.Format("Hit {0}", other.gameObject.name));
