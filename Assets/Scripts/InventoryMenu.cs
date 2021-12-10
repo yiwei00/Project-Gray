@@ -1,3 +1,4 @@
+// defines the inventory and it's associated menu
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,11 +8,14 @@ public class InventoryMenu : MonoBehaviour
 {
     public int inventorySize;
     public GameObject invSlotPrefab;
-    public GameObject defaultWeapon;
+    public int defaultWeapon;
 
     List<InventorySlot> inventory;
     InventorySlot weaponSlot;
     InventorySlot toBeSwapped;
+
+    WorldManager world;
+
     PlayerControls controls; // for getting control inputs
     private Player _player;
     public Player player
@@ -72,9 +76,11 @@ public class InventoryMenu : MonoBehaviour
     {
         if (selected.isEmpty || selected == weaponSlot) return;
         var newLootItem = Instantiate(Prefabs.Get.lootitem);
-        newLootItem.GetComponent<LootItem>().item = selected.popItem();
+        newLootItem.GetComponent<Loot>().item = selected.popItem();
         newLootItem.transform.parent = null;
         newLootItem.transform.position = player.transform.position;
+
+        world.SaveState();
     }
 
     public void setupSwap(InventorySlot selected)
@@ -88,6 +94,7 @@ public class InventoryMenu : MonoBehaviour
         {
             toBeSwapped.toggleHighlight();
             swapSlots(toBeSwapped, selected);
+            world.SaveState();
             toBeSwapped = null;
         }
     }
@@ -111,13 +118,14 @@ public class InventoryMenu : MonoBehaviour
         }
         return false;
     }
-    public bool addItem(InventoryItem item)
+    public bool addItem(Item item)
     {
         foreach (var slot in inventory)
         {
             if (slot.isEmpty)
             {
                 slot.addItem(item);
+                world.SaveState();
                 return true;
             }
         }
@@ -126,6 +134,15 @@ public class InventoryMenu : MonoBehaviour
 
     private void createInventory()
     {
+        if (inventory != null)
+        {
+            for (int i = 0; i < inventory.Count; ++i)
+            {
+                Destroy(inventory[i].gameObject);
+                inventory[i] = null;
+            }
+        }
+        inventory = null;
         if (inventorySize == 0) inventorySize = 45;
         inventory = new List<InventorySlot>();
         for (int i = 0; i < inventorySize; ++i)
@@ -143,6 +160,7 @@ public class InventoryMenu : MonoBehaviour
     void Start()
     {
         player = Player.Instance;
+        world = WorldManager.Instance;
 
         Player.hookInputAction(controls.UI.InvExit, OnInvExit);
         Player.hookInputAction(controls.UI.Cancel, OnInvExit);
@@ -151,11 +169,45 @@ public class InventoryMenu : MonoBehaviour
 
         weaponSlot = transform.Find("WeaponSlot").GetComponent<InventorySlot>();
         weaponSlot.inventory = this;
-        weaponSlot.addItem(new WeaponInventoryItem(defaultWeapon));
+        weaponSlot.addItem(new WeaponItem(Instantiate(world.weaponDict[defaultWeapon])));
 
         if (inventory == null) createInventory();
 
-        Debug.Log("loaded on start");
         gameObject.SetActive(false);
+    }
+
+    [System.Serializable]
+    public class SerializedInv
+    {
+        public string weapSlotJson;
+        public List<string> inventory;
+        public SerializedInv(InventoryMenu inv)
+        {
+            weapSlotJson = inv.weaponSlot.item.toJson();
+            inventory = inv.inventory.ConvertAll(slot => slot.item.toJson());
+        }
+    }
+
+    public string toJson()
+    {
+        return JsonUtility.ToJson(new SerializedInv(this));
+    }
+
+
+    // reload inventory based on json
+    public void fromJson(string json)
+    {
+        // reset swapf
+        toBeSwapped = null;
+
+        var invMenu = JsonUtility.FromJson<SerializedInv>(json);
+        weaponSlot.popItem().destroy();
+        weaponSlot.addItem(Item.fromJson(invMenu.weapSlotJson));
+        inventorySize = invMenu.inventory.Count;
+        createInventory();
+        for (int i = 0; i < inventorySize; ++i)
+        {
+            inventory[i].addItem(Item.fromJson(invMenu.inventory[i]));
+        }
     }
 }

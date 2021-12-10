@@ -218,7 +218,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000015258789}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &120401283
@@ -780,7 +780,7 @@ MonoBehaviour:
   rotationSpeed: 9.4
   baseSpeed: 5
   hand: {fileID: 163859505}
-  defaultWeapon: {fileID: 83062880627255605, guid: fafac8e952e2c7b45802db89c1196a91, type: 3}
+  defaultWeapon: 1
   activeEffects: []
 --- !u!143 &819345395
 CharacterController:
@@ -812,11 +812,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef176cd70c4b0114694e495477a74753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
+  level: -1
+  maxHP: 25
   resist:
     pure_resistance: 0
-    physical_resistance: 0
-    magical_resistance: 0
+    physical_resistance: -0.3
+    magical_resistance: -0.3
 --- !u!114 &819345397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -829,7 +830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ae8659df834b1649a211ba54c023669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerLevel: 0
+  powerLevel: 1
 --- !u!1 &949986382
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,7 +867,7 @@ MonoBehaviour:
   rotationSpeed: 9.4
   baseSpeed: 5
   hand: {fileID: 0}
-  defaultWeapon: {fileID: 0}
+  defaultWeapon: 0
   activeEffects: []
 --- !u!143 &949986384
 CharacterController:
@@ -961,6 +962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef176cd70c4b0114694e495477a74753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: -1
   maxHP: 200
   resist:
     pure_resistance: 0.5
@@ -1086,7 +1088,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000026703, y: 0.000005722}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 195.0716, y: 102.4938}
   m_Pivot: {x: 0.50000006, y: 0.5}
 --- !u!114 &967756805
@@ -1250,9 +1252,9 @@ RectTransform:
   m_Father: {fileID: 1633820731}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -365.83435, y: 188.04526}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 400, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092290326
@@ -1405,7 +1407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventorySize: 0
   invSlotPrefab: {fileID: 6787776663937175, guid: 4ae3e20fdb8363b438b1856fbbb5c232, type: 3}
-  defaultWeapon: {fileID: 419959287903870040, guid: dfc725e8833195c498acf6d61dc2473c, type: 3}
+  defaultWeapon: 0
 --- !u!1 &1229403347
 GameObject:
   m_ObjectHideFlags: 0
@@ -1540,7 +1542,7 @@ MonoBehaviour:
   rotationSpeed: 9.4
   baseSpeed: 5
   hand: {fileID: 1598192247}
-  defaultWeapon: {fileID: 0}
+  defaultWeapon: 1
   activeEffects: []
 --- !u!114 &1312479321
 MonoBehaviour:
@@ -1554,6 +1556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef176cd70c4b0114694e495477a74753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: 1
   maxHP: 100
   resist:
     pure_resistance: 0
@@ -1740,7 +1743,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: RESTART
+  m_Text: RELOAD
 --- !u!222 &1440578568
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1831,7 +1834,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1519956999}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1864492768}
+        m_TargetAssemblyTypeName: WorldManager, Assembly-CSharp
+        m_MethodName: LoadState
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 967756807}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: ExitMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1519956999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2080,8 +2107,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1864492765}
-  - component: {fileID: 1864492766}
   - component: {fileID: 1864492767}
+  - component: {fileID: 1864492768}
   m_Layer: 3
   m_Name: Environment
   m_TagString: Untagged
@@ -2105,20 +2132,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1864492766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1864492764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c0407b718ac502438df2ab551c9ff2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weapon1: {fileID: 2666168222283734823, guid: 8578bc036b2e7a34ba60e1002934f08c, type: 3}
-  lootPrefab: {fileID: 5936723109469040509, guid: 1b052a9c5f5caa846bba61779047a934, type: 3}
 --- !u!114 &1864492767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2133,6 +2146,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invslot: {fileID: 6787776663937175, guid: 4ae3e20fdb8363b438b1856fbbb5c232, type: 3}
   lootitem: {fileID: 5936723109469040509, guid: 1b052a9c5f5caa846bba61779047a934, type: 3}
+--- !u!114 &1864492768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1864492764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb1ef3fc3b518a941a6243df3cef047b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponDict:
+  - {fileID: 83062880627255605, guid: fafac8e952e2c7b45802db89c1196a91, type: 3}
+  - {fileID: 2666168222283734823, guid: 8578bc036b2e7a34ba60e1002934f08c, type: 3}
+  - {fileID: 419959287903870040, guid: dfc725e8833195c498acf6d61dc2473c, type: 3}
 --- !u!1001 &2003940008
 PrefabInstance:
   m_ObjectHideFlags: 0

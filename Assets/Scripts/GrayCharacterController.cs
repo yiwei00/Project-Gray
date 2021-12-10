@@ -10,7 +10,7 @@ public class GrayCharacterController : MonoBehaviour
     public float rotationSpeed = 9.4f;
     public float baseSpeed = 5.0f;
     public Transform hand = null;
-    public GameObject defaultWeapon;
+    public int defaultWeapon;
 
     float sprintMult = 2.0f;
     float curSpeed = 0.0f;
@@ -60,6 +60,12 @@ public class GrayCharacterController : MonoBehaviour
     int roll_trigger_hash;
     int attack1_trigger_hash;
     int death_trigger_hash;
+    int reset_trigger_hash;
+
+    public CharacterController cc
+    {
+        get => characterController;
+    }
 
     // hitpoints
     Hitpoint hitpoint;
@@ -137,6 +143,7 @@ public class GrayCharacterController : MonoBehaviour
             roll_trigger_hash = Animator.StringToHash("roll_trigger");
             attack1_trigger_hash = Animator.StringToHash("attack1_trigger");
             death_trigger_hash = Animator.StringToHash("death_trigger");
+            reset_trigger_hash = Animator.StringToHash("reset_trigger");
         }
         // got hands?
         if (!hand) hand = transform;
@@ -164,9 +171,9 @@ public class GrayCharacterController : MonoBehaviour
         {
             equippedWeapon = GetComponentInChildren<Weapon>();
             if (!equippedWeapon) equippedWeapon = hand.gameObject.GetComponentInChildren<Weapon>();
-            if (!equippedWeapon && defaultWeapon)
+            if (!equippedWeapon && hasAnimator)
             {
-                equipNewWeapon(defaultWeapon);
+                equipNewWeapon(WorldManager.Instance.weaponDict[defaultWeapon]);
             }
         }
         handleWeaponEquip();
@@ -180,6 +187,8 @@ public class GrayCharacterController : MonoBehaviour
 
     public bool equipNewWeapon(GameObject newWeapon)
     {
+        newWeapon = Instantiate(newWeapon);
+        newWeapon.SetActive(false);
         var weapon = newWeapon.GetComponent<Weapon>();
         if (!weapon) return false;
 
@@ -371,20 +380,19 @@ public class GrayCharacterController : MonoBehaviour
     {
         if (newWeaponFlag && canMove())
         {
-            // get new weapon
-            var newWeapon = Instantiate(newWeaponObj);
-            newWeaponFlag = false;
-            newWeaponObj = null;
             // remove current weapon
             if (equippedWeapon)
             {
-                var curWeapon = equippedWeapon.gameObject;
-                Destroy(curWeapon);
+                Destroy(equippedWeapon.gameObject);
             }
 
-            equippedWeapon = newWeapon.GetComponent<Weapon>();
-            newWeapon.transform.parent = transform;
+            equippedWeapon = newWeaponObj.GetComponent<Weapon>();
+            newWeaponObj.transform.parent = transform;
             equippedWeapon.enabled = true;
+            newWeaponObj.SetActive(true);
+
+            newWeaponFlag = false;
+            newWeaponObj = null;
         }
 
     }
@@ -469,5 +477,17 @@ public class GrayCharacterController : MonoBehaviour
     private bool canAttack()
     {
         return !isSprinting && !isRolling();
+    }
+
+    public void resetCharacter()
+    {
+        hitpoint.heal(hitpoint.maxHP);
+        _isDead = false;
+        activeEffects = new List<Effect>();
+        sprintToggled = false;
+        displacement = Vector3.zero;
+        rotDir = Vector3.zero;
+        if (hasAnimator)
+            animator.SetTrigger(reset_trigger_hash);
     }
 }

@@ -35,10 +35,15 @@ public class PauseMenu : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Started)
         {
-            if (player)
-                player.enabled = true;
-            player.OnInventoryMenuExit();
+            ExitMenu();
         }
+    }
+
+    public void ExitMenu()
+    {
+        if (player)
+            player.enabled = true;
+        player.OnInventoryMenuExit();
     }
 
     #endregion

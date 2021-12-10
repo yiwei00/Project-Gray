@@ -34,7 +34,61 @@ public class Player : MonoBehaviour
     float lastAttack;
     float lastRoll;
 
-    GameObject lootItemPrefab;
+    // to help reset
+    Vector3 _initPos;
+    Quaternion _initRot;
+
+    private int _totalExp;
+
+    Hitpoint _hp;
+
+    public Hitpoint hp
+    {
+        get => _hp;
+    }
+
+    public static int xpToLvl(int xp)
+    {
+        return Mathf.FloorToInt(Mathf.Pow((.5f*xp), 1/ 2.35f));
+    }
+
+    public static int lvlToXp(int lvl)
+    {
+        return Mathf.FloorToInt(2*Mathf.Pow(lvl, 2.35f));
+    }
+    public int totalExp
+    {
+        get => _totalExp;
+    }
+    public int level
+    {
+        get {
+            int lvl = xpToLvl(_totalExp);
+            return _totalExp;
+        }
+    }
+
+    public void gainExp(int n)
+    {
+        _totalExp += n;
+    }
+    
+    public int xpToNextLvl()
+    {
+        return Mathf.CeilToInt(xpToLvl(level + 1) - _totalExp);
+    }
+
+    public Vector3 initPos
+    {
+        get => _initPos;
+        set => _initPos = value;
+    }
+
+    public Quaternion initRot
+    {
+        get => _initRot;
+        set => _initRot = value;
+    }
 
     public GrayCharacterController pc
     {
@@ -154,7 +208,7 @@ public class Player : MonoBehaviour
         Collider closestLoot = null;
         foreach (var collider in colliders)
         {
-            if (collider.gameObject.CompareTag("Loot"))
+            if (collider.gameObject.GetComponent<Loot>())
             {
                 float dist = (collider.transform.position - transform.position).magnitude;
                 if (dist < minDist)
@@ -166,9 +220,12 @@ public class Player : MonoBehaviour
         }
         if (minDist < Mathf.Infinity)
         {
-            var loot = closestLoot.gameObject.GetComponent<LootItem>();
-            invMenu.addItem(loot.item);
-            Destroy(closestLoot.gameObject);
+            var loot = closestLoot.gameObject.GetComponent<Loot>();
+            if (loot)
+            {
+                invMenu.addItem(loot.item);
+                Destroy(closestLoot.gameObject);
+            }
         }
     }
     public float lastInput
@@ -188,6 +245,20 @@ public class Player : MonoBehaviour
         action.canceled += callback;
     }
 
+    public void resetPlayer()
+    {
+        displacement = Vector3.zero;
+        isSprintHeld = false;
+        isSprintToggled = false;
+        lastMove = 0f;
+        lastAttack = 0f;
+        lastRoll = 0f;
+        pc.cc.enabled = false;
+        transform.position = _initPos;
+        pc.cc.enabled = true;
+        transform.rotation = _initRot;
+        pc.resetCharacter();
+    }
     private void Awake()  // singleton class
     {
         if (_instance != null && _instance != this)
@@ -205,6 +276,7 @@ public class Player : MonoBehaviour
         // get components
         input = GetComponent<PlayerInput>();
         pc = GetComponent<GrayCharacterController>();
+        _hp = GetComponent<Hitpoint>();
 
         hookInputAction(controls.gameplay.Movement, OnMovement);
         hookInputAction(controls.gameplay.SprintToggle, OnSprintToggle);
@@ -222,6 +294,9 @@ public class Player : MonoBehaviour
 
         invMenu.gameObject.SetActive(false);
         invMenu.player = this;
+
+        _initPos = transform.position;
+        _initRot = transform.rotation;
 
         pc.equipNewWeapon(invMenu.equippedWeapon);
     }

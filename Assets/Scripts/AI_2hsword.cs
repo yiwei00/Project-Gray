@@ -9,15 +9,23 @@ public class AI_2hsword : MonoBehaviour
     float lastAttack;
     float atkCD;
 
-    public float powerLevel;
+    public int powerLevel;
+
+    bool spawnedLoot;
 
     Player player;
     GrayCharacterController character;
+    Hitpoint hitpoint;
     void Start()
     {
         player = Player.Instance;
 
+        spawnedLoot = false;
+
         character = GetComponent<GrayCharacterController>();
+        hitpoint = GetComponent<Hitpoint>();
+
+        hitpoint.adjustToLevel(powerLevel);
 
         lastRoll = -Mathf.Infinity;
         lastAttack = -Mathf.Infinity;
@@ -31,8 +39,13 @@ public class AI_2hsword : MonoBehaviour
     // AI script, aka big ole if else blocks
     void Update()
     {
+        if (character.dead && !spawnedLoot)
+        {
+            spawnedLoot = true;
+            LootTable.spawnLoots(powerLevel, transform.position);
+        }
         if (character.weapon)
-            character.weapon.powerAmp = powerLevel * 10;
+            character.weapon.powerAmp = 5f*Mathf.Log(1+powerLevel)*Mathf.Pow(1+powerLevel, 1/16f);
         // dont do anything if attacking
         if (character.isAttacking()) return;
         // zero out movement first

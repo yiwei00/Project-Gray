@@ -1,31 +1,67 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+
+[System.Serializable]
+public class SerializedWeapon
+{
+    public int weaponID;
+    public string weaponName;
+    public List<string> weaponEffectsJson;
+    public LootRarity rarity;
+    public float powerAmp;
+
+    public SerializedWeapon(Weapon w)
+    {
+        weaponID = w.weaponID;
+        weaponName = w.weaponName;
+        weaponEffectsJson = new List<string>();
+        weaponEffectsJson.AddRange(w.weaponEffects.ConvertAll(e => e.toJson()));
+        rarity = w.rarity;
+        powerAmp = w.powerAmp;
+    }
+    public GameObject toWeaponObj()
+    {
+        var newObj = GameObject.Instantiate(WorldManager.Instance.weaponDict[weaponID]);
+        newObj.SetActive(false);
+        Weapon w = newObj.GetComponent<Weapon>();
+        w.weaponName = weaponName;
+        w.weaponEffects = weaponEffectsJson.ConvertAll(s => Effect.fromJson(s));
+        w.rarity = rarity;
+        w.powerAmp = powerAmp;
+
+        return newObj;
+    }
+}
 
 public class Weapon : MonoBehaviour
 {
+    WorldManager world = WorldManager.Instance;
+    public int weaponID;
     public string weaponName;
-    public static Weapon BasicWeapon;
     public List<Effect> weaponEffects;
-    public Sprite icon;
-    public string description;
     public LootRarity rarity;
-
-    private float _powerAmp;
-
     public float powerAmp
     {
-        get => (_powerAmp-1) * 100;
-        set => _powerAmp = (1 + value/100);
+        get => _powerAmp * 100;
+        set => _powerAmp = value / 100;
     }
+
+    public Sprite icon;
+    public string description;
 
     // collidable weapons are like swords
     // non-collidable weapons are like wands
     public bool isCollidable;
+    // gimmick to make sure to not hit the same collider twice
     List<Collider> alreadyHit;
 
     GameObject attachedTo;
     GrayCharacterController attachedCharacter;
+    // positional
+    public Vector3 attachPos;
+    public Vector3 attachRot;
+
+    private float _powerAmp = 0;
 
     public GameObject holder
     {
@@ -33,9 +69,6 @@ public class Weapon : MonoBehaviour
         set => attachedTo = value;
     }
    
-    // positional
-    public Vector3 attachPos;
-    public Vector3 attachRot;
 
     public void newAtkCycle()
     {
@@ -53,7 +86,7 @@ public class Weapon : MonoBehaviour
         alreadyHit.Add(other);
         Debug.Log(string.Format("Hit {0}", other.gameObject.name));
         var character = other.GetComponent<GrayCharacterController>();
-        character.applyEffect(weaponEffects, _powerAmp);
+        character.applyEffect(weaponEffects, _powerAmp + 1);
     }
 
     // fires projectile for projectile weapons
@@ -77,6 +110,11 @@ public class Weapon : MonoBehaviour
             }
         }
         if (!attachedTo)
+            if (!transform.parent)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
             attachedTo = transform.parent.gameObject;
         attachedCharacter = attachedTo.GetComponent<GrayCharacterController>();
         if (!attachedCharacter)
@@ -84,7 +122,17 @@ public class Weapon : MonoBehaviour
         transform.parent = attachedCharacter.hand;
         transform.localPosition = attachPos;
         transform.localRotation = Quaternion.Euler(attachRot);
+    }
 
-        powerAmp = 0;
+    // json-fy:
+    public string toJson()
+    {
+        return JsonUtility.ToJson(new SerializedWeapon(this));
+    }
+
+    public static GameObject fromJson(string json)
+    {
+        var sWeapon = JsonUtility.FromJson<SerializedWeapon>(json);
+        return sWeapon.toWeaponObj();
     }
 }

@@ -3,15 +3,22 @@ using UnityEngine.UI;
 
 public enum LootRarity
 {
-    COMMON,
-    UNCOMMON,
-    RARE,
-    EPIC,
-    LEGENDARY
+    COMMON = 0,
+    UNCOMMON = 1,
+    RARE = 2,
+    EPIC = 3,
+    LEGENDARY = 4
 }
-public class LootItem : MonoBehaviour
+public enum Modifier
 {
-    private InventoryItem _item = InventoryItem.empty;
+    Plain,
+    Mighty,
+    Arcane,
+    Peculiar
+}
+public class Loot : MonoBehaviour
+{
+    private Item _item = Item.empty;
     
     Text itemName;
 
@@ -44,7 +51,7 @@ public class LootItem : MonoBehaviour
         return ret;
     }
 
-    public InventoryItem item
+    public Item item
     {
         get => _item;
         set
@@ -70,5 +77,10 @@ public class LootItem : MonoBehaviour
         itemCube = transform.Find("ItemObj");
         childOffset = itemCube.localPosition;
         itemName = GetComponentInChildren<Text>();
+    }
+
+    private void OnDestroy()
+    {
+        _item.destroy();
     }
 }

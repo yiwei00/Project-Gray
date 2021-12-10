@@ -1,3 +1,5 @@
+// defines a single slot in an inventory
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -7,7 +9,7 @@ public class InventorySlot : MonoBehaviour
     public Color highlightFrameColor;
 
     Color defaultFrameColor;
-    InventoryItem _item;
+    Item _item;
     Image icon;
     Image frame;
     Image background;
@@ -19,7 +21,7 @@ public class InventorySlot : MonoBehaviour
         set => invMenu = value;
     }
 
-    public InventoryItem item
+    public Item item
     {
         get => _item;
         private set => _item = value;
@@ -33,12 +35,12 @@ public class InventorySlot : MonoBehaviour
 
     public bool isEmpty
     {
-        get => (item == InventoryItem.empty);
+        get => (item == Item.empty);
     }
 
     private void Awake()
     {
-        item = InventoryItem.empty;
+        item = Item.empty;
         icon = transform.Find("Icon").GetComponent<Image>();
         frame = transform.Find("Frame").GetComponent<Image>();
         background = GetComponent<Image>();
@@ -51,7 +53,7 @@ public class InventorySlot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (item == InventoryItem.empty)
+        if (item == Item.empty)
         {
             icon.enabled = false;
         }
@@ -63,9 +65,9 @@ public class InventorySlot : MonoBehaviour
         transWhite.a = .3f;
         background.color = transWhite;
     }
-    public void addItem(InventoryItem newItem)
+    public void addItem(Item newItem)
     {
-        if (!isEmpty || newItem == InventoryItem.empty)
+        if (!isEmpty || newItem == Item.empty)
         {
             return;
         }
@@ -73,15 +75,15 @@ public class InventorySlot : MonoBehaviour
         icon.enabled = true;
         icon.sprite = newItem.icon;
         // set color
-        Color rarityColor = LootItem.rarityToColor(newItem.rarity);
+        Color rarityColor = Loot.rarityToColor(newItem.rarity);
         rarityColor.a = .5f;
         background.color = rarityColor;
     }
 
-    public InventoryItem popItem()
+    public Item popItem()
     {
         var temp = item;
-        item = InventoryItem.empty;
+        item = Item.empty;
         icon.enabled = false;
         // remove color
         resetColor();
@@ -104,5 +106,10 @@ public class InventorySlot : MonoBehaviour
             addItem(other.popItem());
             other.addItem(myItem);
         }
+    }
+
+    private void OnDestroy()
+    {
+        item.destroy();
     }
 }
