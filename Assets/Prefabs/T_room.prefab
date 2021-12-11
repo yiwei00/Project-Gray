@@ -797,7 +797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0abd17a9d81e4417a64ac100ebfa83b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  types_accepted: 010000000a000000
+  types_accepted: 0100000008000000
 --- !u!1001 &2135827265304075557
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -877,7 +877,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0abd17a9d81e4417a64ac100ebfa83b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  types_accepted: 010000000a000000
+  types_accepted: 0100000008000000
 --- !u!1001 &2181008865309263547
 PrefabInstance:
   m_ObjectHideFlags: 0
