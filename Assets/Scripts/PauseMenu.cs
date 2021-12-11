@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -72,6 +73,12 @@ public class PauseMenu : MonoBehaviour
     {
         controlsInfo.SetActive(true);
         buttons.SetActive(false);
+    }
+
+    public void onGameExit()
+    {
+        WorldManager.Instance.SaveState();
+        Application.Quit();
     }
     void Start()
     {

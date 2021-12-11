@@ -11,7 +11,6 @@ public class SceneLoader : MonoBehaviour
         {
             WorldManager.Instance.SaveState();
             SceneManager.LoadScene(1);
-            SceneManager.UnloadSceneAsync(0);
         }
         
     }

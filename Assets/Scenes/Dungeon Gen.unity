@@ -1143,7 +1143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &682625663
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1159,10 +1159,10 @@ RectTransform:
   m_Father: {fileID: 427886340}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 80.464, y: -22.779999}
+  m_SizeDelta: {x: 150, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &682625664
 MonoBehaviour:
@@ -1210,19 +1210,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1102934835}
         m_TargetAssemblyTypeName: WorldManager, Assembly-CSharp
-        m_MethodName: LoadState
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 201087537}
-        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: ExitMenu
+        m_MethodName: resetToHub
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1624,21 +1612,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: WorldManager, Assembly-CSharp
-        m_MethodName: LoadState
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 201087537}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: ExitMenu
+        m_MethodName: onGameExit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1780,10 +1756,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponDict:
   - {fileID: 83062880627255605, guid: fafac8e952e2c7b45802db89c1196a91, type: 3}
+  - {fileID: 1202735652909863152, guid: 5d6ea81ba97da2249a14e948c196cd76, type: 3}
   - {fileID: 419959287903870040, guid: dfc725e8833195c498acf6d61dc2473c, type: 3}
   - {fileID: 2666168222283734823, guid: 8578bc036b2e7a34ba60e1002934f08c, type: 3}
-  - {fileID: 285416208615986027, guid: b00b94c0556224e4497eccbb6010423b, type: 3}
   - {fileID: 1310898701554676118, guid: cb01516c88454504c84749132b2e0398, type: 3}
+  - {fileID: 285416208615986027, guid: b00b94c0556224e4497eccbb6010423b, type: 3}
 --- !u!1001 &1238812300
 PrefabInstance:
   m_ObjectHideFlags: 0

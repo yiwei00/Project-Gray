@@ -104,11 +104,36 @@ public class WorldManager : MonoBehaviour
         player.resetPlayer();
     }
 
-    private void Start()
+    public void resetToHub()
+    {
+        WorldManager.Instance.SaveState();
+        SceneManager.LoadScene(0);
+    }
+
+    void OnEnable()
+    {
+        //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
+        SceneManager.sceneLoaded += OnLevelFinishedLoading;
+    }
+
+    void OnDisable()
+    {
+        //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
+        SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+    }
+
+    void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
         player = Player.Instance;
         inventory = player.invMenu;
         LoadState();
+    }
+
+
+    private void Start()
+    {
+        player = Player.Instance;
+        inventory = player.invMenu;
     }
 
 }
