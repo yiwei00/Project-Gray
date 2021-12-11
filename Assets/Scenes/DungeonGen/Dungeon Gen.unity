@@ -1742,6 +1742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invslot: {fileID: 6787776663937175, guid: 4ae3e20fdb8363b438b1856fbbb5c232, type: 3}
   lootitem: {fileID: 5936723109469040509, guid: 1b052a9c5f5caa846bba61779047a934, type: 3}
+  npc: {fileID: 3154004189030376350, guid: 5b3e65863c3a87d479fce17b5ef6f2c0, type: 3}
 --- !u!114 &1102934835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3501,19 +3502,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1128548662736828114, guid: 2eeae100b1c51ba4ea957e7a96d33106, type: 3}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
-      propertyPath: room_templates.Array.data[2]
-      value: 
-      objectReference: {fileID: 1128548662736828114, guid: 69a369bdffacea7439f772a3cae473e1, type: 3}
-      propertyPath: create_dungeon
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: create_new_dungeon
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.size
-      value: 11
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[2]
@@ -3522,35 +3516,35 @@ PrefabInstance:
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[3]
       value: 
-      objectReference: {fileID: 1128548662736828114, guid: 8f6bed35547964770b2df89a699ab07f, type: 3}
+      objectReference: {fileID: 1128548662736828114, guid: 69a369bdffacea7439f772a3cae473e1, type: 3}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[4]
       value: 
-      objectReference: {fileID: 1128548662736828114, guid: 000ccd18f0f8a48e0a7f491162cf25d1, type: 3}
+      objectReference: {fileID: 1128548662736828114, guid: c1367129f753c46d6a9cd00ba146e4fa, type: 3}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[5]
       value: 
-      objectReference: {fileID: 1128548662736828114, guid: 485ac1a6551844c0ba9aaac8be995185, type: 3}
+      objectReference: {fileID: 1128548662736828114, guid: 975759772a3044b1f868020831834143, type: 3}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[6]
       value: 
-      objectReference: {fileID: 1128548662736828114, guid: c1367129f753c46d6a9cd00ba146e4fa, type: 3}
+      objectReference: {fileID: 1128548662736828114, guid: d6c4340bf06ef49818d1908d1c429726, type: 3}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[7]
       value: 
-      objectReference: {fileID: 1128548662736828114, guid: 975759772a3044b1f868020831834143, type: 3}
+      objectReference: {fileID: 1128548662736828114, guid: 0331e4179ca434b9b9bef26a4205f9b8, type: 3}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[8]
       value: 
-      objectReference: {fileID: 1128548662736828114, guid: d6c4340bf06ef49818d1908d1c429726, type: 3}
+      objectReference: {fileID: 1128548662736828114, guid: e7989508519214a0ba733addb38a8fe0, type: 3}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[9]
       value: 
-      objectReference: {fileID: 1128548662736828114, guid: 0331e4179ca434b9b9bef26a4205f9b8, type: 3}
+      objectReference: {fileID: 1128548662736828114, guid: 000ccd18f0f8a48e0a7f491162cf25d1, type: 3}
     - target: {fileID: 7369729678778910689, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: room_templates.Array.data[10]
       value: 
-      objectReference: {fileID: 1128548662736828114, guid: e7989508519214a0ba733addb38a8fe0, type: 3}
+      objectReference: {fileID: 1128548662736828114, guid: 8f6bed35547964770b2df89a699ab07f, type: 3}
     - target: {fileID: 7369729678778910718, guid: 25151f1b4f89a46fb8fdfd853fe607b8, type: 3}
       propertyPath: m_Name
       value: Generator

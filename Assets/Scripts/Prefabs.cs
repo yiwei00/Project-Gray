@@ -13,6 +13,7 @@ public class Prefabs : MonoBehaviour
 
     public GameObject invslot;
     public GameObject lootitem;
+    public GameObject npc;
 
     private void Awake()  // singleton class
     {

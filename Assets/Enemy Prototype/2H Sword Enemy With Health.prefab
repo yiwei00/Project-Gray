@@ -806,7 +806,7 @@ MonoBehaviour:
   rotationSpeed: 9.4
   baseSpeed: 5
   hand: {fileID: 3154004189029891980}
-  defaultWeapon: 1
+  defaultWeapon: 0
   activeEffects: []
 --- !u!1 &3154004189030376386
 GameObject:
@@ -2134,6 +2134,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e36e72d60acaca9449ff228bcca506d6, type: 3}
+--- !u!1 &763183623203006136 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5592309202607146914, guid: e36e72d60acaca9449ff228bcca506d6, type: 3}
+  m_PrefabInstance: {fileID: 5119608580552859930}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &763183623203006137 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5592309202607146915, guid: e36e72d60acaca9449ff228bcca506d6, type: 3}
@@ -2148,5 +2153,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &305589960553427396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763183623203006136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 238f1c526af05914585f91f98c84c192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

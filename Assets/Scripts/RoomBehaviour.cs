@@ -25,18 +25,18 @@ public class RoomBehaviour : MonoBehaviour
 
     void Start()
     {
-        // if(randomchance) spawn npc
-        /*
-        if(this.compareTag("npc")
+        int npcCount = Random.Range(0, 10);
+        for (int i = 0; i < npcCount; ++i)
         {
-            Debug.Log("npc spawned by" + this);
+            var newNpc = Instantiate(Prefabs.Get.npc);
+            newNpc.transform.position = transform.position;
+            newNpc.SetActive(true);
         }
-        */
-        if(!(root.GetComponent<DungeonGenerator>().boss) && this.CompareTag("Boss"))
+
+        if (!(root.GetComponent<DungeonGenerator>().boss) && this.CompareTag("Boss"))
         {
             root.GetComponent<DungeonGenerator>().boss = true;
             Debug.Log("boss spawned by: " + this);
-
         }
     }
 }
