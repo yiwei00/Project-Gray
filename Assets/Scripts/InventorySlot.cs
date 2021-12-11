@@ -50,6 +50,11 @@ public class InventorySlot : MonoBehaviour
         resetColor();
     }
 
+    private void OnMouseOver()
+    {
+        EventSystem.current.SetSelectedGameObject(gameObject);
+    }
+
     // Update is called once per frame
     void Update()
     {

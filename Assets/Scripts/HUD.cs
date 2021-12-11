@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {
-    void Awake()
-    {
-    }
+
+    public Text levelCounter;
 
     // Update is called once per frame
-    void Update()
+    void Start()
     {
+        levelCounter.text = "Level: " + Player.Instance.level;
     }
 }

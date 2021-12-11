@@ -28,7 +28,7 @@ public class WorldManager : MonoBehaviour
             {
                 Weapon weapon = weaponDict[i].GetComponent<Weapon>();
                 weapon.weaponID = i;
-                if (i == 0) continue;
+                if (i < 2) continue;
                 if (weapon.rarity == LootRarity.LEGENDARY)
                 {
                     _leggos.Add(weapon.gameObject);
@@ -56,12 +56,27 @@ public class WorldManager : MonoBehaviour
     Player player;
     InventoryMenu inventory;
 
+    [System.Serializable]
+    public class GameState
+    {
+        public string invString;
+        public int playerExp;
+        public GameState(string invString, int playerExp)
+        {
+            this.invString = invString;
+            this.playerExp = playerExp;
+        }
+    }
+
+
     public void SaveState()
     {
         string invString = inventory.toJson();
+        int playerExp = player.totalExp;
+        string gameStateStr = JsonUtility.ToJson(new GameState(invString, playerExp));
         string filename = Path.Combine(Application.dataPath, "saves", "save.json");
         Directory.CreateDirectory(Path.GetDirectoryName(filename));
-        File.WriteAllText(filename, invString);
+        File.WriteAllText(filename, gameStateStr);
     }
 
     public void LoadState()
@@ -82,10 +97,11 @@ public class WorldManager : MonoBehaviour
             }
         }
 
-        string invString = File.ReadAllText(filename);
-        inventory.fromJson(invString);
+        string gameStateStr = File.ReadAllText(filename);
+        GameState gameState = JsonUtility.FromJson<GameState>(gameStateStr);
+        inventory.fromJson(gameState.invString);
+        player.totalExp = gameState.playerExp;
         player.resetPlayer();
-        
     }
 
     private void Start()

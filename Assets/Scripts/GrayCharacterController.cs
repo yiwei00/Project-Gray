@@ -153,6 +153,11 @@ public class GrayCharacterController : MonoBehaviour
         activeEffects = new List<Effect>();
     }
 
+    public bool isPlayer()
+    {
+        return Player.Instance.GetComponent<GrayCharacterController>() == this;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -167,7 +172,7 @@ public class GrayCharacterController : MonoBehaviour
             return;
         }
 
-        if (hasAnimator && !equippedWeapon) // equip weapon if has animation
+        if (hasAnimator && !equippedWeapon && !isPlayer()) // equip weapon if has animation
         {
             equippedWeapon = GetComponentInChildren<Weapon>();
             if (!equippedWeapon) equippedWeapon = hand.gameObject.GetComponentInChildren<Weapon>();

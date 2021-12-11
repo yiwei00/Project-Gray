@@ -67,18 +67,25 @@ public class Player : MonoBehaviour
     public int totalExp
     {
         get => _totalExp;
+        set => _totalExp = value;
     }
     public int level
     {
         get {
-            int lvl = xpToLvl(_totalExp);
-            return _totalExp;
+            int lvl = Mathf.FloorToInt(xpToLvl(_totalExp));
+            return lvl;
         }
     }
 
     public void gainExp(int n)
     {
+        int curlvl = level;
         _totalExp += n;
+        if (level > curlvl)
+        {
+            hp.adjustToLevel(level);
+            hud.levelCounter.text = string.Format("Level: {0}", level);
+        }
     }
     
     public int xpToNextLvl()
@@ -288,6 +295,8 @@ public class Player : MonoBehaviour
             lastMove = -INPUT_DELAY - 1;
             lastAttack = -INPUT_DELAY - 1;
             lastRoll = -INPUT_DELAY - 1;
+
+            _totalExp = lvlToXp(1);
         }
     }
     

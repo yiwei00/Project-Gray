@@ -9,6 +9,8 @@ public class PauseMenu : MonoBehaviour
     PlayerControls controls;
     Text _pauseText;
     Button _firstButton;
+    public GameObject controlsInfo;
+    public GameObject buttons;
     public string pauseText
     {
         get => _pauseText.text;
@@ -35,19 +37,42 @@ public class PauseMenu : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Started)
         {
-            ExitMenu();
+            if (controlsInfo.activeInHierarchy)
+            {
+                controlsInfo.SetActive(false);
+                buttons.SetActive(true);
+            }
+            else
+            {
+                ExitMenu();
+            }
         }
     }
 
     public void ExitMenu()
     {
+        if (controlsInfo.activeInHierarchy)
+        {
+            controlsInfo.SetActive(false);
+            buttons.SetActive(true);
+        }
         if (player)
             player.enabled = true;
         player.OnInventoryMenuExit();
     }
 
+    public void OnSelect(InputAction.CallbackContext context)
+    {
+
+    }
+
     #endregion
 
+    public void OnControlMenu()
+    {
+        controlsInfo.SetActive(true);
+        buttons.SetActive(false);
+    }
     void Start()
     {
         player = Player.Instance;

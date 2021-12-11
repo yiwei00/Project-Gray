@@ -77,6 +77,7 @@ public class Weapon : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         // not ready yet
+        if (!other) return;
         if (!isCollidable || !attachedCharacter.inAttackAnim()) return;
         if (other.gameObject == attachedTo) return;
         var targetChar = other.gameObject.GetComponent<GrayCharacterController>();
