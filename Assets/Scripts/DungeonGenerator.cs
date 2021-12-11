@@ -5,25 +5,27 @@ using UnityEngine;
 public class DungeonGenerator : MonoBehaviour
 {
     /*
-     * concept
+     * v1 concept: 2d array, dfs (scrapped)
+     * v2 concept: random wall placement (scrapped)
+     * v3 concept: connection spawnpoints
+     *
+     * advantage: don't need as much code, works with any prefabs as long as connection points are in the right
+     * locations & colliders are set properly (i.e. can change elevation)
      * 
-     * dungeon: room[]
-     *  generate room templates
+     * dungeon: param rooms[]
+     *  generate room templates (scrapped, no time)
      *  create entry room
      *  add to room[]
-     *  add boss to last room
      *
-     * room: connection[]
-     *  add npc, props
+     * room: param connections[]
+     *  add npc, boss depending on room type (skeleton code complete, need to link/merge)
+     *  add props to decorate (scrapped, planned to implement after create_random_room in DungeonGenerator.cs
      *  add self to room[]
      *
-     * connection:
-     *  make random valid room
+     * connection: param available[]
+     *  make random room from available[] room types
      *  
-     * room template: room, connects, types
-     *
-     * an unrealized benefit of this structure is that regardless of changes in elevation, the dungeon will still
-     * generate normally as long as the colliders & connections are placed correctly.
+     * room template: room wall, floor, connection points
      *
      * */
 
@@ -31,7 +33,8 @@ public class DungeonGenerator : MonoBehaviour
     //public GameObject[] wall_tiles;
     //public GameObject[] door_tiles;
     //public GameObject[] connections;
-    public List<GameObject> room_templates;
+    public bool boss, create_new_dungeon;
+    public GameObject[] room_templates;
     public GameObject closed_wall;
     public List<GameObject> rooms;
     //public Vector3 template_offset;
@@ -41,7 +44,8 @@ public class DungeonGenerator : MonoBehaviour
 
     void Awake()
     {
-        rooms = new List<GameObject>();
+        boss = false;
+        create_new_dungeon = false;
     }
 
     void Start()
@@ -55,11 +59,39 @@ public class DungeonGenerator : MonoBehaviour
         room_templates.Add(create_rand_room(8,8,2,2));
         */
 
+        Debug.Log("check Generator => Create_new_dungeon to cleanup old dungeon and make a new one");
+
+        Generate();
+
         // create initial room, connection points will do the rest of the work.
-        rooms.Add(Instantiate(room_templates[0],transform.position,transform.rotation));
 
         //summon boss at rooms[-1]
 
+    }
+
+    void Update()
+    {
+        if(create_new_dungeon)
+        {
+            create_new_dungeon = false;
+            Debug.Log("Creating New Dungeon");
+            CleanUp();
+            Generate();
+        }
+    }
+
+    void Generate()
+    {
+        rooms = new List<GameObject>();
+        rooms.Add(Instantiate(room_templates[0],transform.position,transform.rotation));
+    }
+
+    void CleanUp()
+    {
+        foreach(GameObject room in rooms)
+        {
+            Destroy(room);
+        }
     }
  
     //below is code for random room generation. unfortunately ran out of time before being able to complete this.

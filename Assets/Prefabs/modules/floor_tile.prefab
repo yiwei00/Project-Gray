@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4559197499346322}
   - component: {fileID: 33714028350031090}
   - component: {fileID: 23080454834292848}
-  - component: {fileID: -405106946648236060}
+  - component: {fileID: 2383519847154655239}
   m_Layer: 0
   m_Name: floor_tile
   m_TagString: Untagged
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &-405106946648236060
+--- !u!65 &2383519847154655239
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
