@@ -101,7 +101,7 @@ MonoBehaviour:
   - effectType: 4
     name: sword_dmg
     duration: 0
-    staticStrength: 20
+    staticStrength: 7
     percentStrength: 0
   rarity: 4
   icon: {fileID: 21300000, guid: 8de82cd3a8b8d4fe6be6148f48b9396b, type: 3}

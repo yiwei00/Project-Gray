@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum DmgType: int
 {
@@ -18,6 +19,7 @@ public class Hitpoint : MonoBehaviour
 
     private float[] _resistance;
     public Resistances resist;
+    public Slider healthbar;
 
     [System.Serializable]
     public class Resistances
@@ -144,6 +146,12 @@ public class Hitpoint : MonoBehaviour
         pure_resistance = resist.pure_resistance;
         physical_resistance = resist.physical_resistance;
         magical_resistance = resist.magical_resistance;
+
+        if (healthbar)
+        {
+            float hpPercent = _curHP / (1.0f * maxHP);
+            healthbar.value = hpPercent;
+        }
     }
 
     public void adjustToLevel(int newLevel)

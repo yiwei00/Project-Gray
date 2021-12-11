@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     float camHeight = 7f;
     float camAngle = 60f;
 
+
     // other components
     PlayerControls controls; // for getting control inputs
     PlayerInput input;
@@ -41,6 +42,13 @@ public class Player : MonoBehaviour
     private int _totalExp;
 
     Hitpoint _hp;
+
+    public HUD hud;
+
+    public float healthPercent
+    {
+        get => _hp.curHP * 1f / _hp.maxHP;
+    }
 
     public Hitpoint hp
     {
@@ -165,6 +173,7 @@ public class Player : MonoBehaviour
         {
             input.SwitchCurrentActionMap("UI");
             Time.timeScale = 0;
+            hud.gameObject.SetActive(false);
             invMenu.gameObject.SetActive(true);
         }
     }
@@ -176,6 +185,7 @@ public class Player : MonoBehaviour
             input.SwitchCurrentActionMap("UI");
             Time.timeScale = 0;
             pauseMenu.pauseText = "Paused";
+            hud.gameObject.SetActive(false);
             pauseMenu.gameObject.SetActive(true);
         }
     }
@@ -185,6 +195,7 @@ public class Player : MonoBehaviour
         if (pc.dead && pauseMenu.gameObject.activeInHierarchy) return;
         input.SwitchCurrentActionMap("gameplay");
         Time.timeScale = 1;
+        hud.gameObject.SetActive(true);
         if (invMenu.gameObject.activeInHierarchy)
             invMenu.gameObject.SetActive(false);
         if (pauseMenu.gameObject.activeInHierarchy)
@@ -320,6 +331,8 @@ public class Player : MonoBehaviour
         {
             lastMove = Time.time;
         }
+
+
         camTransform();
     }
 

@@ -95,8 +95,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e88e4c4a42c55b418edc4104ef0c11f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponID: 0
-  weaponName: XXL Needle
+  weaponID: 4
+  weaponName: King Sized Needle
   weaponEffects:
   - effectType: 4
     name: sword_dmg
@@ -117,7 +117,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1310898701554676118}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.13249059, y: 1.6122806, z: 0.059666626}

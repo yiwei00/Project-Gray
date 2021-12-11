@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class LootTable
 {
-    Player player = Player.Instance;
 
     #region rng
     // not my code, taken from here: https://answers.unity.com/questions/421968/normal-distribution-random.html
@@ -73,6 +72,10 @@ public class LootTable
         float max = Mathf.Min(4f, 4f + scaled);
         int normInt = Mathf.RoundToInt(NormalizedRandom(min, max));
         LootRarity rarity = (LootRarity)normInt;
+        if (Random.Range(0, 3) == 0 && rarity != LootRarity.COMMON)
+        {
+            rarity = (LootRarity)((int)rarity - 1);
+        }
         // tee hee
         if (rarity == LootRarity.LEGENDARY) rarity = LootRarity.UNCOMMON;
 
