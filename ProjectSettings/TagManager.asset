@@ -5,15 +5,21 @@ TagManager:
   serializedVersion: 2
   tags:
   - Obstacle
+  - EnemyNPC
+  - SpawnPoint
+  - Rooms
+  - Root
+  - Loot
+  - Boss
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Environment
   - Water
   - UI
-  - 
-  - 
+  - Characters
+  - WorldEntity
   - 
   - 
   - 
