@@ -5,25 +5,27 @@ using UnityEngine;
 public class DungeonGenerator : MonoBehaviour
 {
     /*
-     * concept
+     * v1 concept: 2d array, dfs (scrapped)
+     * v2 concept: random wall placement (scrapped)
+     * v3 concept: connection spawnpoints
+     *
+     * advantage: don't need as much code, works with any prefabs as long as connection points are in the right
+     * locations & colliders are set properly (i.e. can change elevation)
      * 
-     * dungeon: room[]
-     *  generate room templates
+     * dungeon: param rooms[]
+     *  generate room templates (scrapped, no time)
      *  create entry room
      *  add to room[]
-     *  add boss to last room
      *
-     * room: connection[]
-     *  add npc, props
+     * room: param connections[]
+     *  add npc, boss depending on room type (skeleton code complete, need to link/merge)
+     *  add props to decorate (scrapped, planned to implement after create_random_room in DungeonGenerator.cs
      *  add self to room[]
      *
-     * connection:
-     *  make random valid room
+     * connection: param available[]
+     *  make random room from available[] room types
      *  
-     * room template: room, connects, types
-     *
-     * an unrealized benefit of this structure is that regardless of changes in elevation, the dungeon will still
-     * generate normally as long as the colliders & connections are placed correctly.
+     * room template: room wall, floor, connection points
      *
      * */
 
