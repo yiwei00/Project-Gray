@@ -26,10 +26,16 @@ public class RoomBehaviour : MonoBehaviour
     void Start()
     {
         // if(randomchance) spawn npc
+        /*
+        if(this.compareTag("npc")
+        {
+            Debug.Log("npc spawned by" + this);
+        }
+        */
         if(!(root.GetComponent<DungeonGenerator>().boss) && this.CompareTag("Boss"))
         {
             root.GetComponent<DungeonGenerator>().boss = true;
-            Debug.Log("boss spawned at: " + this);
+            Debug.Log("boss spawned by: " + this);
 
         }
     }
